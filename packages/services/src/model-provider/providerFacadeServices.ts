@@ -19,6 +19,7 @@ import {
 import { createServiceDescriptor } from "../descriptors.js";
 import type { ModelConnectivityResult } from "@zcode/shared";
 import { createServiceLogger } from "../logger/serviceLogger.js";
+import type { ModelDiscoveryExecutor, ModelDiscoveryResult } from "./modelCatalogDiscovery.js";
 
 export type {
   ProviderSettingsProviderView,
@@ -68,6 +69,16 @@ export interface IProviderSettingsService {
   testModelConnectivity(
     input: ProviderSettingsConnectivityRequest,
   ): Promise<ModelConnectivityResult>;
+  /**
+   * Probe the provider's own model catalog endpoint.
+   * Read-only: it never writes provider or model configuration and never bumps the
+   * settings revision. Failure is reported as a value, not thrown.
+   */
+  discoverModels(input: ProviderSettingsModelDiscoveryRequest): Promise<ModelDiscoveryResult>;
+}
+
+export interface ProviderSettingsModelDiscoveryRequest {
+  readonly providerId: ProviderId;
 }
 
 export const IProviderSettingsService = createServiceDescriptor<IProviderSettingsService>(
@@ -110,6 +121,7 @@ export function createProviderSettingsService(
   facade: ProviderSettingsFacade,
   ensureReady: () => Promise<void> = async () => {},
   testConnectivity?: ProviderSettingsConnectivityTester,
+  discoverModels?: ModelDiscoveryExecutor,
 ): IProviderSettingsService {
   return {
     onDidChange: toEvent((listener) => facade.onDidChange(listener)),
@@ -205,6 +217,18 @@ export function createProviderSettingsService(
         providerId: input.providerId,
         modelId: input.modelId,
       });
+    },
+    discoverModels: async (input) => {
+      await ensureReady();
+      if (!discoverModels) {
+        return {
+          models: [],
+          error: { message: "Model discovery is unavailable in this environment." },
+        };
+      }
+      // 等待该 Provider 的在途写操作落定，避免探测到保存前的旧 Base URL/凭据。
+      await facade.waitForProviderOperations(input.providerId);
+      return discoverModels({ providerId: input.providerId });
     },
   };
 }

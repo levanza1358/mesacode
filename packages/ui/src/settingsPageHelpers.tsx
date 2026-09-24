@@ -2,7 +2,6 @@
 import type {
   IntegratedTerminalShellOption,
   IntegratedTerminalShellSelection,
-  LocalePreference,
   ZCodeInteractionBehavior,
 } from "@zcode/shared";
 import {
@@ -11,11 +10,6 @@ import {
 } from "@zcode/shared";
 import { useState, useCallback, useEffect } from "react";
 import type { IPlatformService } from "@zcode/shared";
-import {
-  TID_SETTINGS_LOCALE_SELECT_ITEM,
-  TID_SETTINGS_LOCALE_SELECT_TRIGGER,
-  testId,
-} from "@zcode/shared";
 import {
   Select,
   SelectContent,
@@ -38,7 +32,6 @@ import {
   type SettingsSectionId,
 } from "@/settings/settingsPageConfig.js";
 
-export type { Locale, LocalePreference } from "@zcode/shared";
 export { type SettingsSectionId };
 export { createSettingsPageConfig, resolveSettingsSectionForPlatform };
 
@@ -46,7 +39,6 @@ const TASK_AUTO_ARCHIVE_DAY_OPTIONS = [3, 7, 14, 30] as const;
 const ZCODE_INTERACTION_BEHAVIOR_OPTIONS: readonly ZCodeInteractionBehavior[] = ["queue", "guide"];
 
 export function GeneralSectionContent({
-  localePreference,
   interfaceMode = "coding",
   setInterfaceMode = () => {},
   notificationEnabled,
@@ -69,7 +61,6 @@ export function GeneralSectionContent({
   isDesktop,
   isWindowsDesktop,
   showIntegratedTerminalShell = false,
-  setLocalePreference,
   setNotificationEnabled,
   setNotificationSoundEnabled,
   taskAutoArchiveEnabled,
@@ -106,9 +97,7 @@ export function GeneralSectionContent({
   onZCodeInteractionBehaviorChange,
   onAskUserQuestionAutoResolutionEnabledChange = async () => {},
   onModelIoFullRetentionEnabledChange = async () => {},
-  onOpenOnboardingDialog,
 }: {
-  localePreference: LocalePreference;
   interfaceMode?: InterfaceMode;
   setInterfaceMode?: (mode: InterfaceMode) => void;
   notificationEnabled: boolean;
@@ -132,7 +121,6 @@ export function GeneralSectionContent({
   isWindowsDesktop?: boolean;
   showIntegratedTerminalShell?: boolean;
   platform?: IPlatformService;
-  setLocalePreference: (locale: LocalePreference) => void;
   setNotificationEnabled: (enabled: boolean) => void;
   setNotificationSoundEnabled: (enabled: boolean) => void;
   taskAutoArchiveEnabled: boolean;
@@ -169,7 +157,6 @@ export function GeneralSectionContent({
   onZCodeInteractionBehaviorChange: (behavior: ZCodeInteractionBehavior) => Promise<void>;
   onAskUserQuestionAutoResolutionEnabledChange?: (enabled: boolean) => Promise<void>;
   onModelIoFullRetentionEnabledChange?: (enabled: boolean) => Promise<void>;
-  onOpenOnboardingDialog: () => void;
 }) {
   const { intl } = useZCodeIntl();
   const hasServices = Boolean(useOptionalServices());
@@ -278,46 +265,6 @@ export function GeneralSectionContent({
 
   return (
     <div className="space-y-4">
-      <SettingsGroupCard>
-        <SettingsRow
-          label={intl.formatMessage({ id: "settings.locale" })}
-          description={intl.formatMessage({ id: "settings.localeDescription" })}
-          control={
-            <Select
-              value={localePreference}
-              onValueChange={(value) => setLocalePreference(value as LocalePreference)}
-            >
-              <SelectTrigger
-                size="lg"
-                className="w-[260px] min-w-0 justify-between"
-                data-testid={TID_SETTINGS_LOCALE_SELECT_TRIGGER}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  value="system"
-                  data-testid={testId(TID_SETTINGS_LOCALE_SELECT_ITEM, "system")}
-                >
-                  {intl.formatMessage({ id: "settings.locale.system" })}
-                </SelectItem>
-                <SelectItem
-                  value="zh-CN"
-                  data-testid={testId(TID_SETTINGS_LOCALE_SELECT_ITEM, "zh-CN")}
-                >
-                  {intl.formatMessage({ id: "settings.locale.zh-CN" })}
-                </SelectItem>
-                <SelectItem
-                  value="en-US"
-                  data-testid={testId(TID_SETTINGS_LOCALE_SELECT_ITEM, "en-US")}
-                >
-                  {intl.formatMessage({ id: "settings.locale.en-US" })}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          }
-        />
-      </SettingsGroupCard>
 
       <SettingsGroupCard>
         <SettingsRow
@@ -871,31 +818,14 @@ export function GeneralSectionContent({
         />
       </SettingsGroupCard>
 
-      <SettingsGroupCard>
-        <SettingsRow
-          label={intl.formatMessage({ id: "settings.onboarding" })}
-          description={intl.formatMessage({
-            id: "settings.onboardingDescription",
-          })}
-          control={
-            <Button type="button" size="lg" variant="outline" onClick={onOpenOnboardingDialog}>
-              {intl.formatMessage({ id: "settings.onboardingOpen" })}
-            </Button>
-          }
-        />
-      </SettingsGroupCard>
     </div>
   );
 }
 
-export function GeneralSectionHeader({ localePreference }: { localePreference: LocalePreference }) {
-  const { intl } = useZCodeIntl();
-
+export function GeneralSectionHeader() {
   return (
     <div className="mt-4 flex flex-wrap gap-2">
-      <SettingsBadge>
-        {intl.formatMessage({ id: `settings.locale.${localePreference}` })}
-      </SettingsBadge>
+      <SettingsBadge>English</SettingsBadge>
     </div>
   );
 }

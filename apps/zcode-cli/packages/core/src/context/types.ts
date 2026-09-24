@@ -36,6 +36,7 @@ export type ContextSource =
   | "skills" // 可用 skills
   | "tools" // 工具定义
   | "request_user_context" // request-level user context provider-visible 组合块
+  | "soul_context" // SOUL.md persona layer
   | "memory" // 长期 memory read path
   | "current_date" // 当前日期
   | "custom_system_prompt" // 自定义 stable system body
@@ -107,6 +108,7 @@ export interface ContextBuilderConfig {
   presentationSurface?: PresentationSurface;
   currentDate?: string;
   userInstructions?: ResolvedUserInstructions;
+  soulInstructions?: ResolvedUserInstructions;
   projectContext?: ProjectContext;
   memoryRoot?: string;
   memoryIndexContent?: string;

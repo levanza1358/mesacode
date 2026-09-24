@@ -12,7 +12,7 @@ const enUS: Record<string, string> = {
   "startPlan.recommendation.dismiss": "Don’t show again",
   "occupationOnboarding.stepMode": "UI mode",
   "occupationOnboarding.modeTitle": "Choose your UI mode",
-  "occupationOnboarding.modeDescription": "How would you like ZCode to show its work?",
+  "occupationOnboarding.modeDescription": "How would you like Mesa Code to show its work?",
   "occupationOnboarding.coding": "Coding mode",
   "occupationOnboarding.codingDescription":
     "I want to see code, command output, and change details throughout the development process.",
@@ -61,12 +61,12 @@ const enUS: Record<string, string> = {
   "occupationOnboarding.migration": "Migrate conversations",
   "occupationOnboarding.migrationDescription": "Migrate conversation history from Claude Code",
   "occupationOnboarding.memory": "Enable Workspace Memory",
-  "occupationOnboarding.memoryDescription": "Let ZCode remember your preferences and work context.",
+  "occupationOnboarding.memoryDescription": "Let Mesa Code remember your preferences and work context.",
   "occupationOnboarding.suggestions": "Enable proactive task suggestions",
   "occupationOnboarding.suggestionsDescription":
     "Show suggestions in new conversations. Click to fill the composer.",
   "occupationOnboarding.close": "Exit onboarding",
-  "startup.global.silent": "Starting ZCode",
+  "startup.global.silent": "Starting Mesa Code",
   "startup.global.upgrading": "Upgrading local data",
   "startup.global.initializing": "Initializing local data",
   "startup.global.waiting": "Waiting for database preparation",
@@ -77,7 +77,7 @@ const enUS: Record<string, string> = {
   "startup.global.starting": "Preparing local data",
   "startup.global.preparing_host_storage": "Preparing task index",
   "startup.global.preparing_session_storage": "Preparing chat history",
-  "startup.global.starting_services": "Starting ZCode",
+  "startup.global.starting_services": "Starting Mesa Code",
   "startup.global.ready": "Local data is ready",
   "startup.global.failed": "Startup preparation failed",
   "startup.global.help":
@@ -547,14 +547,14 @@ const enUS: Record<string, string> = {
     "Project “{projectName}” will be removed from the sidebar, but files on disk will remain untouched.",
 
   // Welcome / Login
-  "welcome.title": "Welcome to ZCode",
+  "welcome.title": "Welcome to Mesa Code",
   "welcome.username": "Username",
   "welcome.password": "Password",
   "welcome.login": "Login",
   "welcome.loggingIn": "Logging in...",
   "welcome.loginFailed": "Login failed",
-  "login.title": "Welcome to ZCode",
-  "login.description": "Connect your account to start using ZCode",
+  "login.title": "Welcome to Mesa Code",
+  "login.description": "Connect your account to start using Mesa Code",
   "login.oauth.activeProviderHint":
     "Current active provider: {provider}. Signing in again replaces the current identity.",
   "login.oauth.loadingProviders": "Loading account providers...",
@@ -1205,7 +1205,7 @@ const enUS: Record<string, string> = {
   "titleBar.menu.view.actualSize": "Actual size",
   "titleBar.menu.view.zoomIn": "Zoom in",
   "titleBar.menu.view.zoomOut": "Zoom out",
-  "titleBar.menu.help.about": "About ZCode",
+  "titleBar.menu.help.about": "About Mesa Code",
   "titleBar.menu.help.checkForUpdates": "Check for updates",
   "titleBar.menu.help.feedback": "Feedback",
   "sidebar.menu.community": "Community",
@@ -1258,7 +1258,7 @@ const enUS: Record<string, string> = {
   "update.toast.ready": "v{version} downloaded, restart to install",
   "update.toast.devSkipped": "Updates are disabled in dev builds",
   "update.toast.error": "Update check failed: {error}",
-  "forceUpdate.title": "Update ZCode to continue",
+  "forceUpdate.title": "Update Mesa Code to continue",
   "forceUpdate.description":
     "Your current version v{currentVersion} is below the minimum supported version v{minimalVersion}. Update first before continuing with this client.",
   "forceUpdate.currentVersion": "Current version",
@@ -1729,6 +1729,13 @@ const enUS: Record<string, string> = {
   "settings.themeMode.dark": "Dark",
   "settings.themeMode.zai-light": "Light",
   "settings.themeMode.zai-dark": "Dark",
+  "settings.themeMode.black": "Black",
+  "settings.themeMode.midnight": "Midnight",
+  "settings.themeMode.ocean": "Ocean",
+  "settings.themeMode.forest": "Forest",
+  "settings.themeMode.purple": "Purple",
+  "settings.themeMode.rose": "Rose",
+  "settings.themeMode.amber": "Amber",
   "settings.themeMode.system": "System",
   "settings.appearanceTitle": "Appearance",
   "settings.shortcuts.title": "Keyboard Shortcuts",
@@ -1817,6 +1824,29 @@ const enUS: Record<string, string> = {
   "settings.nativeSearchEnhancementsDescription":
     "Use enhanced Find and Grep in new sessions and sessions restored after an app restart. Active sessions keep their current setting; Find remains unchanged on Windows.",
   "settings.memory": "Memory",
+  "settings.soul.title": "Soul",
+  "settings.soul.userTitle": "Global SOUL.md",
+  "settings.soul.userDescription":
+    "Persona for every workspace: identity, language, tone, and workflow preferences. Saved to ~/.zcode/SOUL.md. It cannot override security policy, tool permissions, privacy rules, or the request you make in a chat.",
+  "settings.soul.workspaceTitle": "Workspace SOUL.md",
+  "settings.soul.workspaceDescription":
+    "Persona for this workspace only. Merged on top of the global SOUL.md instead of replacing it.",
+  "settings.soul.templateHint":
+    "No SOUL.md yet. The content below is a starting template — save to create the file.",
+  "settings.soul.save": "Save",
+  "settings.soul.autoGenerate": "Auto-generate",
+  "settings.soul.generating": "Generating…",
+  "settings.soul.restoreDefaults": "Restore defaults",
+  "settings.soul.unsaved": "Unsaved changes",
+  "settings.soul.saved": "SOUL.md saved.",
+  "settings.soul.generated": "SOUL.md draft generated. Review it before saving.",
+  "settings.soul.generateFailed": "Could not auto-generate SOUL.md.",
+  "settings.soul.saveFailed": "Could not save SOUL.md.",
+  "settings.soul.loadFailed": "Could not read SOUL.md.",
+  "settings.soul.userEditorLabel": "Global SOUL.md contents",
+  "settings.soul.workspaceEditorLabel": "Workspace SOUL.md contents",
+  "settings.soul.defaultContent":
+    "# Soul\n\n## Identity\n- You are the Mesa Code assistant.\n\n## Language\n- Reply in the language the user writes in.\n\n## Style\n- Short and practical, no filler.\n- State plainly when something was not run or could not be verified.\n\n## Workflow\n- Prefer the smallest change that solves the problem.\n",
   "settings.memory.workspaceMemory": "Workspace Memory",
   "settings.memoryDescription":
     "Save and reuse long-term context in workspaces. Applies to new sessions and may increase model requests and token costs.",
@@ -2117,7 +2147,7 @@ const enUS: Record<string, string> = {
   "settings.browser.import.elevationCancelled":
     "Windows administrator access was canceled. No cookies were imported.",
   "settings.browser.import.helperVerificationFailed":
-    "ZCode could not verify its Windows secure import component. Reinstall or update ZCode before importing cookies.",
+    "Mesa Code could not verify its Windows secure import component. Reinstall or update Mesa Code before importing cookies.",
   "settings.browser.import.appBoundFailed":
     "Windows could not unlock Chrome's App-Bound cookies. No cookies were imported.",
   "settings.browser.import.adminConfirmTitle":
@@ -3047,6 +3077,20 @@ const enUS: Record<string, string> = {
   "settings.modelProvider.models": "Model list",
   "settings.modelProvider.modelsEmpty": "No models are configured. Add a model to use it in chat.",
   "settings.modelProvider.addModel": "Add model",
+  "settings.modelProvider.fetchModels": "Fetch models",
+  "settings.modelProvider.discovery.title": "Fetch models from provider",
+  "settings.modelProvider.discovery.description":
+    "Models returned by {provider}'s /models endpoint. Select the ones you want to add; already added models are disabled.",
+  "settings.modelProvider.discovery.loading": "Fetching model list…",
+  "settings.modelProvider.discovery.empty": "This provider returned no models.",
+  "settings.modelProvider.discovery.allAdded": "All models from this provider are already added.",
+  "settings.modelProvider.discovery.addSelected": "Add selected ({count})",
+  "settings.modelProvider.discovery.selectAll": "Select all",
+  "settings.modelProvider.discovery.clearAll": "Clear",
+  "settings.modelProvider.discovery.configHint":
+    "Newly added models use recommended configuration when available. You can fine-tune each model afterwards.",
+  "settings.modelProvider.discovery.close": "Close",
+  "settings.modelProvider.discovery.retry": "Retry",
   "settings.modelProvider.modelId": "Model ID",
   "settings.modelProvider.modelDisplayName": "Display name",
   "settings.modelProvider.modelApiFormat.anthropic": "Anthropic messages",
@@ -4109,12 +4153,12 @@ const enUS: Record<string, string> = {
   "settingsSync.discovery.categoryCount": "Categories found: {count}",
   "settingsSync.discovery.error": "Scan failed: {error}",
   "settingsSync.discovery.continue": "Continue",
-  "onboarding.dialog.title": "Welcome to ZCode",
+  "onboarding.dialog.title": "Welcome to Mesa Code",
   "onboarding.dialog.description": "Choose how to start your first session.",
   "onboarding.wizard.label": "Migration guide",
   "onboarding.welcome.eyebrow": "First run setup",
-  "onboarding.welcome.title": "Welcome to ZCode",
-  "onboarding.welcome.start": "Start ZCode",
+  "onboarding.welcome.title": "Welcome to Mesa Code",
+  "onboarding.welcome.start": "Start Mesa Code",
   "onboarding.welcome.migrate": "Migration Guide",
   "onboarding.welcome.helper":
     "Import existing tool settings now, or skip and continue later from Settings.",
@@ -4235,8 +4279,8 @@ const enUS: Record<string, string> = {
   "chat.emptyResult.description":
     "This task finished without any chat content. It may have been stopped before the model produced a response.",
   "chat.placeholder.newTask":
-    "Ask ZCode anything, @ to add context, / for commands or capabilities",
-  "chat.placeholder.newTaskMobile": "Ask ZCode anything…",
+    "Ask Mesa Code anything, @ to add context, / for commands or capabilities",
+  "chat.placeholder.newTaskMobile": "Ask Mesa Code anything…",
   "chat.placeholder.followUpAsk": "Ask for follow-up changes",
   "chat.placeholder.followUpQueue": "Keep typing to queue follow-up changes",
   "chat.placeholder.loading": "Initializing task...",
@@ -4515,7 +4559,7 @@ const enUS: Record<string, string> = {
   "chat.toolbar.computerUse.tooltip.permissionRequired":
     "Missing macOS permissions — click to grant",
   "chat.toolbar.computerUse.tooltip.error":
-    "Computer Use enablement failed. Please restart ZCode app and retry, or ask ZCode to investigate the logs",
+    "Computer Use enablement failed. Please restart Mesa Code app and retry, or ask Mesa Code to investigate the logs",
   "chat.toolbar.computerUse.tooltip.sessionBusy":
     "A conversation is running. Computer Use can't be toggled right now — try again after it finishes.",
   "chat.toolbar.mode.description":
@@ -6104,7 +6148,7 @@ const enUS: Record<string, string> = {
   "offPeak.form.titlePlaceholder": "e.g. Nightly refactor",
   "offPeak.form.instructionsLabel": "Instructions",
   "offPeak.form.instructionsPlaceholder":
-    "Describe a task ZCode can work on in the background, including the expected result and any constraints…",
+    "Describe a task Mesa Code can work on in the background, including the expected result and any constraints…",
   "offPeak.form.permissionWarning":
     "Idle-time runs are unattended. Actions that need confirmation will pause the task until you respond.",
   "offPeak.form.modelLabel": "Model",

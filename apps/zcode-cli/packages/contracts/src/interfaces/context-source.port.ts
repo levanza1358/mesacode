@@ -27,7 +27,7 @@ export interface UserInstructionsOptions {
   maxBytes?: number;
 }
 
-export type UserInstructionSourceScope = "user" | "workspace";
+export type UserInstructionSourceScope = "user" | "workspace" | "soul";
 
 export interface ResolvedUserInstructionSource {
   scope: UserInstructionSourceScope;
@@ -80,6 +80,7 @@ export interface ContextSourceSnapshot {
   envInfo: EnvInfo;
   currentDate?: string;
   userInstructions?: ResolvedUserInstructions;
+  soulInstructions?: ResolvedUserInstructions;
   projectContext?: ProjectContext;
   diagnostics: ContextSourceDiagnostic[];
 }

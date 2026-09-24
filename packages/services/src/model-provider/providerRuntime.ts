@@ -9,6 +9,7 @@ import {
   type AccountProviderConfigSnapshot,
   type ProviderConfigSnapshot,
   type ProviderSettingsMutationTarget,
+  type ProviderSettingsView,
   type ProviderSource,
 } from "@zcode/provider";
 import {
@@ -24,10 +25,13 @@ import {
   type ModelSelectionConfiguredDefaultSource,
   type ProviderSettingsConnectivityTester,
 } from "./providerFacadeServices.js";
+import type { ModelDiscoveryExecutor } from "./modelCatalogDiscovery.js";
+import type { ModelDiscoveryProviderFacts } from "./modelDiscoveryExecutor.js";
 
 export interface ProviderRuntimeOptions extends ProviderConfigRuntimeOptions {
   readonly accountSource?: RefreshableProviderSource<AccountProviderConfigSnapshot>;
   readonly testConnectivity?: ProviderSettingsConnectivityTester;
+  readonly discoverModels?: ModelDiscoveryExecutor;
 }
 
 export interface ProviderRuntimeDependencies {
@@ -35,6 +39,7 @@ export interface ProviderRuntimeDependencies {
   readonly accountSource?: RefreshableProviderSource<AccountProviderConfigSnapshot>;
   readonly disposeAccountSource?: () => void;
   readonly testConnectivity?: ProviderSettingsConnectivityTester;
+  readonly discoverModels?: ModelDiscoveryExecutor;
   readonly modelSelectionConfiguredDefaultSource?: ModelSelectionConfiguredDefaultSource;
   readonly disposeModelSelectionConfiguredDefaultSource?: () => void;
 }
@@ -65,8 +70,7 @@ export class ProviderRuntime {
   readonly registryService: ProviderRegistryService;
   readonly providerSettings: IProviderSettingsService;
   readonly modelSelection: IModelSelectionService;
-  readonly #configRuntime: ProviderConfigRuntime;
-  readonly #disposeAccountSource?: () => void;
+  readonly #configRuntime: ProviderConfigRuntime;  readonly #settingsFacade: ProviderSettingsFacade;  readonly #disposeAccountSource?: () => void;
   readonly #disposeBuiltinRecovery: () => void;
   readonly #modelSelectionRuntime: IModelSelectionService & { dispose(): void };
   readonly #disposeModelSelectionConfiguredDefaultSource?: () => void;
@@ -101,10 +105,12 @@ export class ProviderRuntime {
     );
     const ensureReady = () => this.start();
     const settingsFacade = new ProviderSettingsFacade(this.registryService, mutations);
+    this.#settingsFacade = settingsFacade;
     this.providerSettings = createProviderSettingsService(
       settingsFacade,
       ensureReady,
       dependencies.testConnectivity,
+      dependencies.discoverModels,
     );
     this.#modelSelectionRuntime = createModelSelectionService(
       createNodeModelSelectionFacade(this.registryService),
@@ -123,6 +129,30 @@ export class ProviderRuntime {
       if (this.#startPromise === startPromise) this.#startPromise = null;
     });
     return startPromise;
+  }
+
+  /**
+   * Read one provider's effective facts for a read-only probe (model discovery).
+   * Returns null when the provider is unknown to this Environment or before the
+   * registry has published a snapshot, so callers can fail closed.
+   */
+  readEffectiveProviderFacts(providerId: string): ModelDiscoveryProviderFacts | null {
+    if (this.#disposed) return null;
+    let view: ProviderSettingsView;
+    try {
+      view = this.#settingsFacade.getView();
+    } catch {
+      return null;
+    }
+    const provider = view.providers.find((item) => item.providerId === providerId);
+    if (!provider) return null;
+    const access = provider.effectiveConfig.access;
+    const api = provider.effectiveConfig.api;
+    return {
+      enabled: provider.enabled,
+      api: { type: api?.type ?? null, baseUrl: api?.baseUrl ?? null, headers: api?.headers ?? null },
+      apiKey: access?.type === "api-key" ? (access.apiKey ?? null) : null,
+    };
   }
 
   dispose(): void {
@@ -194,7 +224,7 @@ function createSettingsMutationTarget(
 }
 
 export function createProviderRuntime(options: ProviderRuntimeOptions): ProviderRuntime {
-  const { accountSource, testConnectivity, ...configRuntimeOptions } = options;
+  const { accountSource, testConnectivity, discoverModels, ...configRuntimeOptions } = options;
   const configRuntime = createProviderConfigRuntime(configRuntimeOptions);
   const modelSelectionConfiguredDefaultSource = new NodeModelSelectionConfigRepository({
     personalRepository: configRuntime.personalRepository,
@@ -203,6 +233,7 @@ export function createProviderRuntime(options: ProviderRuntimeOptions): Provider
     configRuntime,
     accountSource,
     testConnectivity,
+    discoverModels,
     modelSelectionConfiguredDefaultSource,
     disposeModelSelectionConfiguredDefaultSource: () =>
       modelSelectionConfiguredDefaultSource.dispose(),

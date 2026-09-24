@@ -18,6 +18,7 @@ import { buildWorkflowActorIdentitySection } from "./sections/workflow-actor.js"
 import { buildEnvInfoSection, buildGitSystemContextSection } from "./sections/env-info.js";
 import { buildSkillsSection } from "./sections/skills.js";
 import { buildRequestUserContextSection } from "./sections/request-user-context.js";
+import { buildSoulContextSection } from "./sections/soul-context.js";
 import { buildCurrentDateSection } from "./sections/current-date.js";
 import { buildMemorySection } from "./sections/memory.js";
 import { buildDesktopContextSection } from "./sections/desktop.js";
@@ -186,7 +187,16 @@ export class ContextBuilder {
       }
     }
 
-    // 5. Meta user context: workspace instructions/project memory first, date second.
+    // 5. Persona layer (SOUL.md) is injected right before project instructions so
+    // it takes priority when the two disagree.
+    const soulSection = buildSoulContextSection({
+      soulInstructions: this.config.soulInstructions,
+    });
+    if (soulSection) {
+      sections.push(soulSection);
+    }
+
+    // 6. Meta user context: workspace instructions/project memory first, date second.
     const requestUserContextSection = buildRequestUserContextSection({
       userInstructions: this.config.userInstructions,
       memoryIndexContent: this.config.memoryIndexContent,

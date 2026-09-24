@@ -1,28 +1,24 @@
-# 内置默认配置
+# Built-in Default Configuration
 
-`config/default.json` 是随客户端发布的默认配置，必须保留。Desktop 从打包文件读取，
-Web 在构建时导入；远端请求失败或缺少有效字段时使用内置值。
+`config/default.json` is the default configuration shipped with the client and must remain available. Desktop reads it from the packaged files, while Web imports it at build time. The built-in values are used when the remote request fails or does not contain valid fields.
 
-## 帮助配置来源
+## Help and Community Configuration
 
-新版社群和反馈入口请求当前 endpoint 的 `GET /api/v1/client/configs`，
-读取 `data.configs.feedbackUrl`：
+The community and feedback entry points request `GET /api/v1/client/configs` from the current endpoint and read `data.configs.feedbackUrl`.
 
-- `community_urls["zh-CN" | "en-US"]`：只按当前语言回退到内置入口，不跨语言回退。
-- `feedback_url`：远端有效地址优先，否则使用内置地址。
-- `feedback_use_external_form`：远端布尔值优先，`false` 也是有效覆盖。
+- `community_urls["zh-CN" | "en-US"]`: legacy locale keys are retained for compatibility; the product UI is English-only.
+- `feedback_url`: a valid remote URL takes precedence over the built-in URL.
+- `feedback_use_external_form`: a remote boolean takes precedence; `false` is also a valid override.
 
-请求携带 `app_version`；Desktop 另带 `platform-arch`，Web 省略平台参数。
-成功响应仅做 1 小时内存缓存，请求使用 `cache: no-store`，失败不缓存。
+Requests include `app_version`. Desktop also includes `platform-arch`; Web omits the platform parameter. Successful responses are cached in memory for one hour. Requests use `cache: no-store`, and failures are not cached.
 
 ```text
-当前 endpoint client/configs -> 有效帮助字段 -> 平台入口
-                  | 缺失 / 失败
-                  v
-          内置 default.json -> 平台入口
+GET endpoint /api/v1/client/configs -> valid help fields -> platform entry
+                         | missing / failure
+                         v
+                built-in default.json -> platform entry
 ```
 
-default.json 为随客户端分发的内置默认配置；历史上曾经 CDN 分发、仅为旧版客户端兼容保留，
-现版本无请求或 URL 构造链路，只依赖本目录内置文件，其他字段与既有消费者保持不变。
+`default.json` is distributed with the client. Legacy CDN-related fields remain only for compatibility; the current version relies on this built-in file and preserves the other fields required by existing consumers.
 
-详细规则见 [用户社群入口配置](../docs/ui/settings-community-link-config.md)。
+See [community entry configuration](../docs/ui/settings-community-link-config.md) for detailed rules.

@@ -2,6 +2,7 @@
 import { createInMemorySessionEventStore } from "@zcode/adapters/storage";
 import type { ModelSelection } from "@zcode/contracts";
 import {
+  zcodeProviderDiscoverModelsParamsSchema,
   zcodeProviderTestModelConnectivityParamsSchema,
   zcodeWorkspaceReadPresentationParamsSchema,
   type ZCodeWorkspaceRef,
@@ -61,6 +62,34 @@ export async function testProviderModelConnectivity(
       { abortSignal },
     );
     return { success: true as const };
+  } finally {
+    if (!active) await app.close?.();
+  }
+}
+
+export async function discoverProviderModels(
+  context: ZCodeProtocolAgentServerContext,
+  rawParams: unknown,
+  abortSignal?: AbortSignal,
+) {
+  const params = parseParams(zcodeProviderDiscoverModelsParamsSchema, rawParams);
+  // 探测必须使用目标 Environment 已解析的凭据；与连接测试一样先主动 refresh，
+  // 否则跨进程 watcher 可能读到旧 Registry。
+  await context.deps.refreshProviderRegistry?.("provider-discover-models");
+  const active = Array.from(context.sessions.values()).find(
+    (record) => record.workspace.workspaceKey === params.workspace.workspaceKey,
+  );
+  const app =
+    active?.app ??
+    (await createWorkspaceZCodeApp(context, params.workspace, {
+      env: context.deps.env,
+      eventStore: createInMemorySessionEventStore(),
+      runtimeConfig: { workingDirectory: params.workspace.workspacePath },
+      sessionStore: context.deps.sessionStore,
+      version: context.deps.version,
+    }));
+  try {
+    return await app.discoverModels({ providerId: params.providerId, abortSignal });
   } finally {
     if (!active) await app.close?.();
   }

@@ -126,6 +126,7 @@ export function createContextBuilderFromSnapshot(
     presentationSurface: this.config.presentationSurface,
     currentDate: snapshot.currentDate,
     userInstructions: snapshot.userInstructions,
+    soulInstructions: snapshot.soulInstructions,
     projectContext: snapshot.projectContext,
     memoryIndexContent: options.memoryIndexContent,
     memoryRoot,

@@ -54,6 +54,17 @@ export class NodeContextSourceAdapter implements ContextSourcePort {
           this.env,
         )
       : undefined;
+    // SOUL.md is resolved independently from AGENTS.md: same global + workspace
+    // scopes, but kept as its own field so the core context builder can render it
+    // as a separate higher-priority section.
+    const soulInstructions = await resolveSoulInstructions(
+      {
+        workingDirectory,
+        projectRoot: projectRoot ?? undefined,
+      },
+      diagnostics,
+      this.env,
+    );
     const projectContext =
       request.projectContext ?? (projectRoot ? await detectProjectContext(projectRoot) : undefined);
 
@@ -62,6 +73,7 @@ export class NodeContextSourceAdapter implements ContextSourcePort {
       envInfo,
       currentDate: request.currentDate ?? formatLocalIsoDate(new Date()),
       userInstructions,
+      soulInstructions,
       projectContext,
       diagnostics,
     };
@@ -89,6 +101,51 @@ export function createNodeContextSourceAdapter(
   options: NodeContextSourceAdapterOptions = {},
 ): NodeContextSourceAdapter {
   return new NodeContextSourceAdapter(options);
+}
+
+/**
+ * Resolves the persona layer (`SOUL.md`) from the user home and the workspace root.
+ *
+ * Both scopes are read when present and concatenated, so a workspace persona adds to
+ * the global one instead of replacing it. Every source is tagged with the `soul` scope
+ * so the core builder can render it above `AGENTS.md`.
+ */
+async function resolveSoulInstructions(
+  options: { workingDirectory: string; projectRoot?: string },
+  diagnostics: ContextSourceDiagnostic[],
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<ResolvedUserInstructions | undefined> {
+  const maxBytes = DEFAULT_MAX_BYTES;
+  const projectRoot = options.projectRoot ?? (await findProjectRoot(options.workingDirectory));
+
+  const candidates = dedupeInstructionFileCandidates([
+    await findSoulFile(resolveUserHomeDir(env), "user"),
+    await findSoulFile(projectRoot ?? options.workingDirectory, "workspace"),
+  ]);
+
+  const sources: ResolvedUserInstructionSource[] = [];
+  for (const candidate of candidates) {
+    const source = await readInstructionSource(candidate, maxBytes, diagnostics);
+    if (source) {
+      sources.push(source);
+    }
+  }
+
+  if (sources.length === 0) return undefined;
+
+  return mergeInstructionSources(sources);
+}
+
+async function findSoulFile(
+  directory: string,
+  scope: "user" | "workspace",
+): Promise<InstructionFileCandidate | undefined> {
+  // The global persona lives at `~/.zcode/SOUL.md` to match the existing
+  // `~/.zcode/AGENTS.md` convention; the workspace persona sits at the project root.
+  const filePath = scope === "user" ? join(directory, ".zcode", "SOUL.md") : join(directory, "SOUL.md");
+  if (!(await isFile(filePath))) return undefined;
+
+  return { filePath, fileName: "SOUL.md", scope: "soul" as const };
 }
 
 async function resolveUserInstructions(

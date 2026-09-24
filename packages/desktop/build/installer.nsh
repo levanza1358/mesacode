@@ -27,6 +27,44 @@
 
 !ifdef BUILD_UNINSTALLER
   Var ZCodeUninstallerLogUnavailable
+  Var ZCodeDeleteUserData
+
+  Page custom un.ZCodeDataPageCreate un.ZCodeDataPageLeave
+
+  Function un.ZCodeDataPageCreate
+    nsDialogs::Create 1018
+    Pop $R0
+    ${If} $R0 == error
+      Abort
+    ${EndIf}
+    ${NSD_CreateLabel} 0 0 100% 24u "Mesa Code data"
+    Pop $R0
+    ${NSD_CreateCheckbox} 0 32u 100% 12u "Delete all Mesa Code data, settings, caches, and workspace data"
+    Pop $R1
+    ${NSD_SetState} $R1 ${BST_UNCHECKED}
+    nsDialogs::Show
+  FunctionEnd
+
+  Function un.ZCodeDataPageLeave
+    ${NSD_GetState} $R1 $R0
+    StrCpy $ZCodeDeleteUserData $R0
+  FunctionEnd
+
+  !macro customUnInstall
+    ${If} $ZCodeDeleteUserData == ${BST_CHECKED}
+      RMDir /r "$APPDATA\${APP_FILENAME}"
+      RMDir /r "$APPDATA\${APP_PRODUCT_FILENAME}"
+      RMDir /r "$APPDATA\${APP_PACKAGE_NAME}"
+      RMDir /r "$LOCALAPPDATA\${APP_FILENAME}"
+      RMDir /r "$LOCALAPPDATA\${APP_PRODUCT_FILENAME}"
+      RMDir /r "$LOCALAPPDATA\${APP_PACKAGE_NAME}"
+      RMDir /r "$APPDATA\MesaCode Preview"
+      RMDir /r "$APPDATA\MesaCode"
+      RMDir /r "$LOCALAPPDATA\MesaCode Preview"
+      RMDir /r "$LOCALAPPDATA\MesaCode"
+      RMDir /r "$USERPROFILE\.zcode"
+    ${EndIf}
+  !macroend
 
   ; 卸载器只在更新时删除旧文件；单独记录清理阶段，避免外层把权限/空间错误误报成应用仍在运行。
   !macro ZCodeReportUninstallerStage MESSAGE

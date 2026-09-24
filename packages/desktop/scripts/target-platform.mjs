@@ -3,19 +3,12 @@ import process from "node:process";
 function normalizeTargetOs(rawOs) {
   const value = (rawOs ?? "").toLowerCase();
   switch (value) {
-    case "mac":
-    case "macos":
-    case "darwin":
-    case "osx":
-      return "darwin";
     case "win":
     case "windows":
     case "win32":
       return "win32";
-    case "linux":
-      return "linux";
     default:
-      throw new Error(`Unsupported target OS: ${rawOs}`);
+      throw new Error(`Unsupported target OS: ${rawOs}. Mesa Code desktop packaging supports Windows only.`);
   }
 }
 

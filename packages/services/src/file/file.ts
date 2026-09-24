@@ -77,6 +77,29 @@ export interface IFileService {
     transform: "sync-gitignore" | "reset-defaults";
   }): Promise<{ content: string }>;
   writeWorkspaceFileSearchIgnore(params: { rootPath: string; content: string }): Promise<void>;
+  /**
+   * SOUL.md (persona layer) read/write for the settings page.
+   * source: "file" when the file already exists; "template" when it does not exist yet
+   * and content is the initial content preview (written to disk only on save).
+   */
+  readSoulFile(params: {
+    scope: "user" | "workspace";
+    rootPath?: string | null;
+  }): Promise<{ content: string; source: "file" | "template" }>;
+  writeSoulFile(params: {
+    scope: "user" | "workspace";
+    rootPath?: string | null;
+    content: string;
+  }): Promise<void>;
+  /**
+   * SOUL.md auto-generate for the settings page.
+   * Returns a locally derived draft for the editor; it never touches disk, so an
+   * existing persona file can only be replaced by an explicit save.
+   */
+  generateSoulFile(params: {
+    scope: "user" | "workspace";
+    rootPath?: string | null;
+  }): Promise<{ content: string }>;
 }
 
 export const IFileService = createServiceDescriptor<IFileService>(ServiceChannels.File);

@@ -11,6 +11,7 @@ import {
 import { buildCliPrefixSection } from "../context/sections/cli-prefix.js";
 import { buildCurrentDateSection } from "../context/sections/current-date.js";
 import { buildRequestUserContextSection } from "../context/sections/request-user-context.js";
+import { buildSoulContextSection } from "../context/sections/soul-context.js";
 import { buildSkillsSection } from "../context/sections/skills.js";
 import { estimateTokens } from "../context/utils.js";
 import { buildSubagentCommonNotes, buildSubagentEnvironmentContext } from "./system-prompt.js";
@@ -23,6 +24,7 @@ export interface SubagentContextBuilderConfig {
   skillMetadataBudget?: number;
   skills?: ContextBuilderConfig["skills"];
   userInstructions?: ContextBuilderConfig["userInstructions"];
+  soulInstructions?: ContextBuilderConfig["soulInstructions"];
 }
 
 const EPHEMERAL_CACHE_CONTROL = { type: "ephemeral" as const };
@@ -138,6 +140,13 @@ function buildSubagentContextSections(config: SubagentContextBuilderConfig): Con
       })}`,
     }),
   );
+
+  const soulSection = buildSoulContextSection({
+    soulInstructions: config.soulInstructions,
+  });
+  if (soulSection) {
+    sections.push(soulSection);
+  }
 
   const requestUserContextSection = buildRequestUserContextSection({
     userInstructions: config.userInstructions,

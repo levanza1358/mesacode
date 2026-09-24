@@ -27,6 +27,8 @@ import {
   transformWorkspaceFileSearchIgnore,
   writeWorkspaceFileSearchIgnore,
 } from "./workspaceFileIgnore.js";
+import { buildAutoSoulContent } from "./autoSoul.js";
+import { readSoulFile, writeSoulFile } from "./soulFile.js";
 import { createServiceLogger } from "../logger/serviceLogger.js";
 import { getConversationWorkspaceDir } from "../paths.js";
 const DEFAULT_TEXT_READ_BYTES = 128 * 1024;
@@ -637,6 +639,39 @@ export function createFileService(options: CreateFileServiceOptions = {}): IFile
       content: string;
     }): Promise<void> {
       await writeWorkspaceFileSearchIgnore(params.rootPath, params.content);
+    },
+    async readSoulFile(params: {
+      scope: "user" | "workspace";
+      rootPath?: string | null;
+    }): Promise<{ content: string; source: "file" | "template" }> {
+      return readSoulFile({
+        homeDir: homedir(),
+        rootPath: params.rootPath ?? null,
+        scope: params.scope,
+      });
+    },
+    async writeSoulFile(params: {
+      scope: "user" | "workspace";
+      rootPath?: string | null;
+      content: string;
+    }): Promise<void> {
+      await writeSoulFile({
+        homeDir: homedir(),
+        rootPath: params.rootPath ?? null,
+        scope: params.scope,
+        content: params.content,
+      });
+    },
+    async generateSoulFile(params: {
+      scope: "user" | "workspace";
+      rootPath?: string | null;
+    }): Promise<{ content: string }> {
+      return {
+        content: await buildAutoSoulContent({
+          scope: params.scope,
+          rootPath: params.rootPath ?? null,
+        }),
+      };
     },
   };
 }

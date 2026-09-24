@@ -1,11 +1,10 @@
 /**
- * 草稿态空态问候：时间问候语 + ZCode Logo。
+ * 草稿态空态问候：时间问候语 + Mesa Code Logo。
  * 自旧版 ChatView/ChatViewEmptyState.tsx 恢复（该组件随旧 ChatView 删除，
  * i18n key `chat.empty.greeting.*` 一直保留）；边界时刻自动换档逻辑保真。
  * 手机远控复用同一组件，但继续保留 20px 紧凑标题；桌面草稿首页才按标题自身宽度适配。
  */
 import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
-import darkEmptyStateLogoUrl from "@/assets/Z.svg";
 import { cn } from "@/components/lib/utils.js";
 import { useZCodeIntl } from "@/i18n/IntlProvider.js";
 import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
@@ -181,7 +180,7 @@ export function ConversationDraftEmptyState({ className }: { className?: string 
           "-translate-x-1/2 -translate-y-1/2 text-foreground-subtlest",
         )}
       >
-        <ZCodeEmptyStateLogo className="h-full w-full" />
+        <MesaCodeEmptyStateLogo className="h-full w-full" />
       </div>
       <p
         ref={greetingContainerRef}
@@ -209,7 +208,7 @@ export function ConversationDraftEmptyState({ className }: { className?: string 
   );
 }
 
-function ZCodeEmptyStateLogo({ className }: { className?: string }) {
+function MesaCodeEmptyStateLogo({ className }: { className?: string }) {
   return (
     <>
       {/* 夜间资源已自带渐变和透明度，公共容器叠加遮罩会让它重复变淡；渐隐效果只属于浅色线框。*/}
@@ -234,14 +233,6 @@ function ZCodeEmptyStateLogo({ className }: { className?: string }) {
           stroke="currentColor"
         />
       </svg>
-      {/* 深色资源包含专用渐变与模糊效果，不能通过 currentColor 复刻；主题类保证两套 Logo 互斥显示。 */}
-      <img
-        aria-hidden="true"
-        className={cn(className, "hidden dark:block")}
-        data-v4-draft-logo="dark"
-        src={darkEmptyStateLogoUrl}
-        alt=""
-      />
     </>
   );
 }

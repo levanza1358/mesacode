@@ -32,6 +32,10 @@ z-work/
 openclaw/
 .run-logs/
 .worktrees/
+# Local Copilot/browser conversation captures and terminal logs.
+o*.json
+*.log
+clean-dev.txt
 packages/stream-animate/dist-server/
 packages/stream-animate/.stream-animate-data/
 .codegraph

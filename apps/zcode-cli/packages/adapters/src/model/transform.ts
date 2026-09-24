@@ -23,6 +23,7 @@ import {
 } from "./tool-result-media-projection.js";
 import { dataUrlToDataContent, unsupportedInputMediaText } from "./media-transform-policy.js";
 import { normalizeOpenAiCompatibleSystemMessages } from "./system-message-compat.js";
+import { normalizeToolCallHistory } from "./tool-call-history-normalization.js";
 
 export interface AiSdkMessageTransformOptions {
   apiFormat?: string;
@@ -51,6 +52,13 @@ export function toAiSdkMessages(
     options.providerKind === "openai-compatible"
       ? normalizeOpenAiCompatibleSystemMessages(messages)
       : messages;
+  // OpenAI-compatible upstreams validate tool-call/tool-result pairing themselves and answer
+  // a hard 400 (CodeBuddy: `tool_call_sequence_broken`) that no retry can clear, because the
+  // rejected history is still in the session. Repair the pairing before the SDK serializes it.
+  const repairedMessages =
+    options.providerKind === "openai-compatible"
+      ? normalizeToolCallHistory(normalizedMessages)
+      : normalizedMessages;
   const shouldStripOpenAiResponsesStoredReasoning =
     shouldStripStoredReasoningForOpenAiResponsesStatelessReplay(options);
 
@@ -63,7 +71,7 @@ export function toAiSdkMessages(
     pendingToolMediaParts = [];
   };
 
-  for (const message of normalizedMessages) {
+  for (const message of repairedMessages) {
     if (message.role !== "tool") {
       flushPendingToolMedia();
     }

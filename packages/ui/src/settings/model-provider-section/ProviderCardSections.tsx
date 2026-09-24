@@ -12,6 +12,7 @@ import type {
   ProviderSettingsFormModel,
 } from "@/lib/providerSettingsFormTypes.js";
 import type { ModelConnectivityResult } from "@zcode/shared";
+import type { ModelDiscoveryResult } from "@zcode/services";
 import type { ProviderApiType } from "@zcode/provider";
 import {
   TID_MODEL_PROVIDER_ADD_MODEL_BUTTON,
@@ -22,7 +23,7 @@ import {
   TID_MODEL_PROVIDER_NAME_INPUT,
   testId,
 } from "@zcode/shared";
-import { InfoIcon, LockKeyholeIcon, Plus, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { InfoIcon, LockKeyholeIcon, Plus, Pencil, Trash2, MoreHorizontal, DownloadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
 import {
@@ -40,6 +41,7 @@ import { ModelRowInput } from "./ProviderFormControls.js";
 import { PresetProviderApiKeyBanner } from "./PresetProviderApiKeyBanner.js";
 import { type ProviderModelDraftValues } from "@/settings/model-provider-section/ProviderModelMetadata.js";
 import { ProviderModelMetadataDialog } from "@/settings/model-provider-section/ProviderModelMetadataDialog.js";
+import { ProviderModelDiscoveryDialog } from "@/settings/model-provider-section/ProviderModelDiscoveryDialog.js";
 import {
   ProviderApiFormatSelect,
   resolveProviderConnectionApiFormatDisplayLabel,
@@ -350,6 +352,8 @@ export function ProviderModelsSection({
   providerAccess,
   models,
   onTestModel,
+  onDiscoverModels,
+  onAddDiscoveredModels,
   onModelCommit,
   onModelEnabledChange,
   onDeleteModel,
@@ -363,6 +367,8 @@ export function ProviderModelsSection({
   providerAccess?: ProviderConfigObject["access"];
   models: ProviderSettingsFormModel[];
   onTestModel?: (model: string) => Promise<ModelConnectivityResult>;
+  onDiscoverModels?: () => Promise<ModelDiscoveryResult>;
+  onAddDiscoveredModels?: (modelIds: readonly string[]) => Promise<string[]>;
   onModelCommit: (
     originalModelId: string,
     model: ProviderSettingsFormModel,
@@ -377,6 +383,7 @@ export function ProviderModelsSection({
   const { intl } = useZCodeIntl();
   const { providerSettingsService } = useServices();
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [discoveryDialogOpen, setDiscoveryDialogOpen] = useState(false);
   const [addSaving, setAddSaving] = useState(false);
   const addSavingRef = useRef(false);
   const [addCommitError, setAddCommitError] = useState<string | null>(null);
@@ -470,17 +477,32 @@ export function ProviderModelsSection({
         <span className="text-ui-base text-foreground-subtle">
           {intl.formatMessage({ id: "settings.modelProvider.models" })}
         </span>
-        <Button
-          type="button"
-          variant="secondary"
-          size="default"
-          className="rounded-lg"
-          data-testid={TID_MODEL_PROVIDER_ADD_MODEL_BUTTON}
-          onClick={openAddDialog}
-        >
-          <Plus data-icon="inline-start" aria-hidden="true" />
-          {intl.formatMessage({ id: "settings.modelProvider.addModel" })}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {onDiscoverModels && onAddDiscoveredModels ? (
+            <Button
+              type="button"
+              variant="secondary"
+              size="default"
+              className="rounded-lg"
+              data-testid="model-provider-fetch-models-button"
+              onClick={() => setDiscoveryDialogOpen(true)}
+            >
+              <DownloadIcon data-icon="inline-start" aria-hidden="true" />
+              {intl.formatMessage({ id: "settings.modelProvider.fetchModels" })}
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="secondary"
+            size="default"
+            className="rounded-lg"
+            data-testid={TID_MODEL_PROVIDER_ADD_MODEL_BUTTON}
+            onClick={openAddDialog}
+          >
+            <Plus data-icon="inline-start" aria-hidden="true" />
+            {intl.formatMessage({ id: "settings.modelProvider.addModel" })}
+          </Button>
+        </div>
       </div>
       {models.length > 0 ? (
         <div className="overflow-hidden rounded-lg border border-input-border bg-input">
@@ -577,6 +599,17 @@ export function ProviderModelsSection({
           }}
         />
       </>
+      {onDiscoverModels && onAddDiscoveredModels ? (
+        <ProviderModelDiscoveryDialog
+          open={discoveryDialogOpen}
+          providerId={providerId}
+          providerName={providerName ?? providerId}
+          existingModelIds={models.map((model) => model.modelId)}
+          fetchModels={onDiscoverModels}
+          onAddSelected={onAddDiscoveredModels}
+          onOpenChange={setDiscoveryDialogOpen}
+        />
+      ) : null}
     </div>
   );
 }

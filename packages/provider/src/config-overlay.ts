@@ -41,6 +41,6 @@ export function requiredFieldIssue(path: readonly string[], field: string): Conf
   return {
     code: "required-field-missing",
     path: [...path, field],
-    message: `缺少必填配置 ${[...path, field].join(".")}`,
+    message: `Missing required configuration ${[...path, field].join(".")}`,
   };
 }

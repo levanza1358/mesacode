@@ -149,7 +149,6 @@ const MAX_PROVIDER_MESSAGE_CHARS = 1_000;
 const PROVIDER_BUSINESS_ERROR_BODY_CLEANUP_TIMEOUT_MS = 1_000;
 const PROVIDER_BUSINESS_ERROR_WRAPPER_CODE = "PROVIDER_BUSINESS_ERROR";
 const SSE_FRAME_SEPARATOR_PATTERN = /\r\n\r\n|\n\n|\r\r/;
-const AUTHORIZATION_HEADER_NAME = "Authorization";
 
 export class AiSdkModelExecution {
   private readonly env: EnvRecord;
@@ -294,7 +293,10 @@ export class AiSdkModelExecution {
           apiKey,
           baseURL: normalizeAnthropicBaseURL(providerConfig.baseURL),
           fetch: createAnthropicCompatFetch(optionFetch),
-          headers: withAnthropicAuthorizationHeader(apiKey, headers),
+          // Coding Plan / Anthropic Messages authenticates with x-api-key.
+          // Do not add Bearer Authorization: strict Z.ai channels reject the
+          // mixed auth shape as an unapproved API invocation.
+          headers,
         });
         return provider as LanguageModelFactory;
       }
@@ -383,29 +385,6 @@ function applyModelRequestAuth(
       ? { headers: mergeModelRequestHeaders(providerConfig.headers, requestAuth.headers) }
       : {}),
   };
-}
-
-function withAnthropicAuthorizationHeader(
-  apiKey: string | undefined,
-  headers: Record<string, string> | undefined,
-): Record<string, string> | undefined {
-  if (!apiKey || hasHeader(headers, AUTHORIZATION_HEADER_NAME)) {
-    return headers;
-  }
-
-  // Anthropic 兼容网关会同时读取 x-api-key 和 Bearer Authorization；显式配置的 Authorization 保持优先。
-  return {
-    [AUTHORIZATION_HEADER_NAME]: `Bearer ${apiKey}`,
-    ...headers,
-  };
-}
-
-function hasHeader(headers: Record<string, string> | undefined, name: string): boolean {
-  if (!headers) {
-    return false;
-  }
-  const normalizedName = name.toLowerCase();
-  return Object.keys(headers).some((key) => key.toLowerCase() === normalizedName);
 }
 
 function normalizeAnthropicBaseURL(baseURL: string | undefined): string | undefined {

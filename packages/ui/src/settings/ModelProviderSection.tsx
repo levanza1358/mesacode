@@ -15,9 +15,7 @@ import {
   type ProviderFamilyConnectionSelectionSettings,
   type ProviderFamilyDomain,
   type OAuthProviderId,
-  resolveModelProviderFamilyIdByProviderId,
   resolveModelProviderFamilySpecByProviderId,
-  resolveProviderFamilyDomainFromOAuthProvider,
   ZAI_PROVIDER_ID,
 } from "@zcode/shared";
 import { useZCodeIntl } from "@/i18n/IntlProvider.js";
@@ -30,7 +28,6 @@ import { useServices } from "@/hooks/useServices.js";
 import { useZCodeStore } from "@/store/StoreProvider.js";
 import { logger } from "@/logger.js";
 import {
-  PRESET_PROVIDER_SPECS,
   PRESET_SUBSCRIPTION_TIMEOUT_MS,
   BIGMODEL_REGISTRATION_URL,
   type CodingPlanStatus,
@@ -146,37 +143,6 @@ function shouldRefreshCodingPlanEntitlementsAfterSave(
   );
 }
 
-function resolveBuiltinPresetOAuthProvider(
-  presetId: BuiltinModelProviderId,
-): OAuthProviderId | null {
-  if (
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan ||
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
-  ) {
-    return ZAI_PROVIDER_ID;
-  }
-  if (
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan ||
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
-  ) {
-    return BIGMODEL_PROVIDER_ID;
-  }
-  return null;
-}
-
-function shouldShowPresetProviderForActiveOAuth(
-  presetId: BuiltinModelProviderId,
-  providerFamilyDomain: ProviderFamilyDomain | null | undefined,
-): boolean {
-  const presetOAuthProvider = resolveBuiltinPresetOAuthProvider(presetId);
-  if (!providerFamilyDomain || !presetOAuthProvider) {
-    return true;
-  }
-  return resolveModelProviderFamilyIdByProviderId(presetId) === providerFamilyDomain;
-}
-
 function clearPendingProviderFamilyConnectionSelection(
   selections: ProviderFamilyConnectionSelectionSettings,
   familyId: ProviderFamilyDomain,
@@ -250,7 +216,6 @@ export function ModelProviderSection({
   const { modelSelectionService, oauthService, credentialService } = useServices();
   const {
     modelProviders,
-    providerTemplates,
     displayOrder,
     loading,
     loadError,
@@ -268,6 +233,7 @@ export function ModelProviderSection({
     saveDisplayOrder,
     reorderableProviderIds,
     testModelConnectivity,
+    discoverModels,
     providerSettingsView,
   } = useModelProviders({
     workspacePath,
@@ -277,17 +243,6 @@ export function ModelProviderSection({
       id: "settings.modelProvider.testModel.localWorkspaceUnavailable",
     }),
   });
-  const entitledAccountProviderIds = useMemo<ReadonlySet<string>>(() => {
-    return new Set(
-      (providerSettingsView?.providers ?? [])
-        .filter(
-          (provider) =>
-            provider.effectiveConfig.access?.type === "zhipu-account" &&
-            provider.effectiveConfig.access.entitled === true,
-        )
-        .map((provider) => provider.providerId),
-    );
-  }, [providerSettingsView]);
   const providerConnectionRefreshSignal = providerSettingsView?.revision;
   const [initialModelProviderTarget] = useState(() => consumePendingSettingsModelProviderTarget());
   const [invalidProviderTarget, setInvalidProviderTarget] = useState(() =>
@@ -389,7 +344,6 @@ export function ModelProviderSection({
   const setOAuthError = useZCodeStore((state) => state.setOAuthError);
   const {
     settings: sharedSettings,
-    loading: sharedSettingsLoading,
     error: sharedSettingsError,
     update: updateSharedSettings,
   } = useSettings();
@@ -418,20 +372,6 @@ export function ModelProviderSection({
       authenticatedZaiEnterpriseProducts.refresh(),
     ]);
   }, [authenticatedEnterpriseProducts, authenticatedZaiEnterpriseProducts]);
-  const subscribedTeamProducts = useMemo(
-    () => [
-      ...(authenticatedEnterpriseProducts.snapshot?.productList.filter(
-        (product) => product.subscribed === true,
-      ) ?? []),
-      ...(authenticatedZaiEnterpriseProducts.snapshot?.productList.filter(
-        (product) => product.subscribed === true,
-      ) ?? []),
-    ],
-    [
-      authenticatedEnterpriseProducts.snapshot?.productList,
-      authenticatedZaiEnterpriseProducts.snapshot?.productList,
-    ],
-  );
   const connectionSelections = sharedSettings?.providerFamilyConnectionSelections ?? {};
   const familyConnectionSettingsFailed = sharedSettingsError !== null && sharedSettings === null;
   const effectiveConnectionSelections = useMemo(
@@ -441,15 +381,6 @@ export function ModelProviderSection({
     }),
     [connectionSelections, pendingConnectionSelections],
   );
-  // 原仅检查 bigmodel selectedKey 是否为 team plan，zai team key
-  // 永远不会触发已购团队 fallback（断裂）。改为任一 family 有持久化 team key 即显示。
-  const showPurchasedTeamPlanFallback = Boolean(
-    effectiveConnectionSelections.bigmodel?.kind === "team-coding-plan" ||
-    effectiveConnectionSelections.zai?.kind === "team-coding-plan",
-  );
-  const effectiveProviderFamilyDomain =
-    sharedSettings?.providerFamilyDomain ??
-    resolveProviderFamilyDomainFromOAuthProvider(activeOAuthProvider);
   const { entitlements: codingPlanEntitlements, refresh: refreshCodingPlanEntitlements } =
     useCodingPlanEntitlements({
       providerSettingsView,
@@ -605,17 +536,6 @@ export function ModelProviderSection({
     };
   }, [providerConnectionRefreshSignal, refreshCodingPlanPurchaseTokenState]);
 
-  const presetProviders = useMemo(
-    () =>
-      PRESET_PROVIDER_SPECS.filter((preset) =>
-        shouldShowPresetProviderForActiveOAuth(preset.id, effectiveProviderFamilyDomain),
-      ).map((preset) => ({
-        ...preset,
-        provider: modelProviders.find((provider) => provider.providerId === preset.id) ?? null,
-      })),
-    [effectiveProviderFamilyDomain, modelProviders],
-  );
-
   useEffect(() => {
     if (!presetSubscriptionProviderId) {
       return;
@@ -681,19 +601,8 @@ export function ModelProviderSection({
 
   const { navigationGroups, navigationItems, selectedNavItem, navigationUnavailable } =
     useModelProviderNavigation({
-      presetProviders,
       modelProviders,
-      entitledAccountProviderIds,
-      modelProvidersLoading: loading,
       displayOrder,
-      codingPlanEntitlements,
-      subscribedTeamProducts,
-      providerFamilyDomain: effectiveProviderFamilyDomain,
-      connectionSelections: effectiveConnectionSelections,
-      pendingConnectionSelections,
-      showPurchasedTeamPlanFallback,
-      familyConnectionSettingsLoading: sharedSettingsLoading && sharedSettings === null,
-      familyConnectionSettingsFailed,
       selectedNodeKey,
       setSelectedNodeKey,
       intl,
@@ -1033,6 +942,11 @@ export function ModelProviderSection({
     [testModelConnectivity],
   );
 
+  const handleDiscoverModels = useCallback(
+    (providerId: string) => discoverModels(providerId),
+    [discoverModels],
+  );
+
   // 首屏慢网时之前直接 return null，导致整块模型供应商页空白，
   // 已有的左侧分组 loading 和刷新按钮 loading 都没有机会渲染。
   // 这里改为始终先渲染布局壳子，再按分组展示 loading，避免用户误以为页面坏了。
@@ -1085,12 +999,8 @@ export function ModelProviderSection({
       ) : null}
       {templatePickerOpen ? (
         <ProviderTemplatePicker
-          templates={providerTemplates}
           creating={creatingProvider}
           onBack={() => setTemplatePickerOpen(false)}
-          onCreateFromTemplate={(templateId) => {
-            return handleCreateProvider({ templateId });
-          }}
           onCreateCustom={(label) => {
             return handleCreateProvider({ providerName: label });
           }}
@@ -1132,6 +1042,7 @@ export function ModelProviderSection({
           // Provider 的 Effective 模型无法写入 Personal modelOrder。模型调序独立于成员来源。
           onReorderProviderModels={reorderProviderModels}
           onTestModel={handleTestModel}
+          onDiscoverModels={handleDiscoverModels}
           onCodingPlanLogin={handleCodingPlanLogin}
           onRetryCodingPlan={() => {
             // 取 Key 失败不等于登录失效；沿用 Host 手动刷新，不清除 OAuth 或重新登录。

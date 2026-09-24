@@ -45,6 +45,7 @@ import type {
   ZCodePluginOperationProgressNotification,
   ZCodeProviderTestModelConnectivityParams,
   ZCodeProviderTestModelConnectivityResult,
+  ZCodeProviderDiscoverModelsResult,
   ZCodeUserInputRequestParams,
   ZCodeUserInputResponse,
   ZCodeSessionEvent,
@@ -319,6 +320,11 @@ export interface ZCodeAgentGenerateWorkspaceTextParams extends ZCodeAgentWorkspa
 
 export interface ZCodeAgentTestModelConnectivityParams extends ZCodeAgentWorkspaceTarget {
   selection: ZCodeProviderTestModelConnectivityParams["selection"];
+  signal?: AbortSignal;
+}
+
+export interface ZCodeAgentDiscoverModelsParams extends ZCodeAgentWorkspaceTarget {
+  providerId: string;
   signal?: AbortSignal;
 }
 
@@ -687,6 +693,12 @@ export interface IZCodeAgentService {
   testModelConnectivity(
     params: ZCodeAgentTestModelConnectivityParams,
   ): Promise<ZCodeProviderTestModelConnectivityResult>;
+  /**
+   * Read-only probe of a provider's model catalog endpoint.
+   * Credential resolution lives in the CLI, so the settings surface cannot call the
+   * provider directly; failure is returned as a value, not thrown.
+   */
+  discoverModels(params: ZCodeAgentDiscoverModelsParams): Promise<ZCodeProviderDiscoverModelsResult>;
   /**
    * @deprecated：send 主路径已收敛 v4 sendText 命令。仅剩两个消费点——
    * adapter 带附件输入回退（待附件命令面落地后移除）与 zcodeSessionService

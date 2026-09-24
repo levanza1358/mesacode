@@ -11,17 +11,12 @@ import type { ReactNode } from "react";
 import type { Locale, LocalePreference } from "@zcode/shared";
 import { DEFAULT_LOCALE } from "@zcode/shared";
 import type { BroadcastMessage, IBroadcastService, ISettingService } from "@zcode/services";
-import {
-  readNavigatorLanguage,
-  readSafeLocalStorage,
-  writeSafeLocalStorage,
-} from "@/lib/browserEnvironment.js";
-import zhCN from "./locales/zh-CN.js";
+import { readSafeLocalStorage, writeSafeLocalStorage } from "@/lib/browserEnvironment.js";
 import enUS from "./locales/en-US.js";
 
-/** 语言 → 翻译消息映射 */
+/** The product UI is intentionally English-only; the legacy locale key remains readable. */
 const MESSAGES: Record<Locale, Record<string, string>> = {
-  "zh-CN": zhCN,
+  "zh-CN": enUS,
   "en-US": enUS,
 };
 
@@ -144,9 +139,9 @@ export function ZCodeIntlProvider({
   children,
   settingService,
   broadcastService,
-  initialLocale,
+  initialLocale: _initialLocale,
   preferSettingServiceLocale = false,
-  resolveSystemLocale: resolveHostSystemLocale,
+  resolveSystemLocale: _resolveHostSystemLocale,
 }: {
   children: ReactNode;
   settingService?: ISettingService;
@@ -158,21 +153,6 @@ export function ZCodeIntlProvider({
   const applyingBroadcastRef = useRef(false);
   const ignoredLocalLocaleBroadcastPayloadRef = useRef<LocaleBroadcastPayload | null>(null);
   const localePreferenceOperationSeqRef = useRef(0);
-  const resolveNavigatorSystemLocale = useCallback((): Locale => {
-    const language = readNavigatorLanguage();
-    if (!language) {
-      return DEFAULT_LOCALE;
-    }
-
-    return language.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
-  }, []);
-  const resolveSystemLocale = useCallback(async (): Promise<Locale> => {
-    const resolvedLocale = await resolveHostSystemLocale?.();
-    if (isLocale(resolvedLocale)) {
-      return resolvedLocale;
-    }
-    return resolveNavigatorSystemLocale();
-  }, [resolveHostSystemLocale, resolveNavigatorSystemLocale]);
 
   const readStoredPreference = useCallback((): LocalePreference | null => {
     const raw = readSafeLocalStorage(LOCALE_PREFERENCE_KEY);
@@ -186,10 +166,8 @@ export function ZCodeIntlProvider({
     writeSafeLocalStorage(LOCALE_PREFERENCE_KEY, preference);
   }, []);
 
-  const [localePreference, setLocalePreferenceState] = useState<LocalePreference>(
-    () => initialLocale ?? readStoredPreference() ?? "system",
-  );
-  const [systemLocale, setSystemLocale] = useState<Locale>(() => resolveNavigatorSystemLocale());
+  const [localePreference, setLocalePreferenceState] = useState<LocalePreference>("en-US");
+
   const enqueueLocalePreferenceUpdate = useCallback(
     (operationSeq: number, resolvedLocale: Locale, preference: LocalePreference) => {
       if (localePreferenceOperationSeqRef.current !== operationSeq) {
@@ -229,25 +207,12 @@ export function ZCodeIntlProvider({
       if (disposed) {
         return;
       }
-      if (nextPreference) {
-        // 手机远控和桌面连接到同一个 settingService，但手机浏览器本地可能残留
-        // en-US/system 偏好。远控入口必须以桌面 setting.json 为准，否则会出现桌面中文、手机英文。
-        setLocalePreferenceState(nextPreference);
-        if (preferSettingServiceLocale) {
-          persistLocalePreference(nextPreference);
-        }
-        if (nextPreference === "system") {
-          const resolvedLocale = await resolveSystemLocale();
-          if (disposed || localePreferenceOperationSeqRef.current !== initialOperationSeq) {
-            return;
-          }
-          setSystemLocale(resolvedLocale);
-          if (settings.locale !== resolvedLocale) {
-            // setting.json 里的 locale 是 main 进程菜单、远控等非浏览器上下文的实际语言。
-            // system 模式必须使用宿主系统语言；Electron renderer 的 navigator.language 可能和
-            // macOS app.getLocale() 不一致，直接写回会把中文系统错误持久化成英文。
-            enqueueLocalePreferenceUpdate(initialOperationSeq, resolvedLocale, "system");
-          }
+      if (nextPreference && preferSettingServiceLocale) {
+        // Read legacy settings for compatibility, but keep the product UI fixed to English.
+        setLocalePreferenceState("en-US");
+        persistLocalePreference("en-US");
+        if (settings.locale !== "en-US" || settings.localePreference !== "en-US") {
+          enqueueLocalePreferenceUpdate(initialOperationSeq, "en-US", "en-US");
         }
       }
     });
@@ -259,57 +224,33 @@ export function ZCodeIntlProvider({
     preferSettingServiceLocale,
     readStoredPreference,
     enqueueLocalePreferenceUpdate,
-    resolveSystemLocale,
     settingService,
   ]);
 
-  const locale = useMemo<Locale>(() => {
-    return localePreference === "system" ? systemLocale : localePreference;
-  }, [localePreference, systemLocale]);
+  const locale = "en-US" as const;
 
   const setLocalePreference = useCallback(
-    (newPreference: LocalePreference) => {
+    (_newPreference: LocalePreference) => {
       const operationSeq = localePreferenceOperationSeqRef.current + 1;
       localePreferenceOperationSeqRef.current = operationSeq;
-      setLocalePreferenceState(newPreference);
-      persistLocalePreference(newPreference);
+      setLocalePreferenceState("en-US");
+      persistLocalePreference("en-US");
       void (async () => {
-        const resolvedLocale =
-          newPreference === "system" ? await resolveSystemLocale() : newPreference;
-        if (localePreferenceOperationSeqRef.current !== operationSeq) {
-          return;
-        }
-        if (newPreference === "system") {
-          setSystemLocale(resolvedLocale);
-        }
         const broadcastPayload: LocaleBroadcastPayload = {
-          preference: newPreference,
-          resolvedLocale,
+          preference: "en-US",
+          resolvedLocale: "en-US",
         };
         if (!applyingBroadcastRef.current && broadcastService) {
-          // 跨窗口语言同步不能等待 settingService 持久化 RPC。
-          // 持久化可能超时或拒绝，但本地 UI 与其他窗口应先按用户最后一次选择同步。
           ignoredLocalLocaleBroadcastPayloadRef.current = broadcastPayload;
-          void broadcastService
-            .send({
-              channel: STATE_LOCALE_CHANNEL,
-              payload: broadcastPayload,
-            })
-            .finally(() => {
-              if (
-                ignoredLocalLocaleBroadcastPayloadRef.current?.preference ===
-                  broadcastPayload.preference &&
-                ignoredLocalLocaleBroadcastPayloadRef.current.resolvedLocale ===
-                  broadcastPayload.resolvedLocale
-              ) {
-                ignoredLocalLocaleBroadcastPayloadRef.current = null;
-              }
-            });
+          void broadcastService.send({
+            channel: STATE_LOCALE_CHANNEL,
+            payload: broadcastPayload,
+          });
         }
-        enqueueLocalePreferenceUpdate(operationSeq, resolvedLocale, newPreference);
+        enqueueLocalePreferenceUpdate(operationSeq, "en-US", "en-US");
       })();
     },
-    [broadcastService, enqueueLocalePreferenceUpdate, persistLocalePreference, resolveSystemLocale],
+    [broadcastService, enqueueLocalePreferenceUpdate, persistLocalePreference],
   );
 
   useEffect(() => {
@@ -336,9 +277,8 @@ export function ZCodeIntlProvider({
         // 语言切换真实发生在 IntlProvider，不能只依赖 store 里的 locale 字段。
         // 结构化广播需要同时携带用户偏好和解析语言，避免 system 被其他窗口降级成固定语言。
         localePreferenceOperationSeqRef.current += 1;
-        setLocalePreferenceState(payload.preference);
-        persistLocalePreference(payload.preference);
-        setSystemLocale(payload.resolvedLocale);
+        setLocalePreferenceState("en-US");
+        persistLocalePreference("en-US");
       } finally {
         applyingBroadcastRef.current = false;
       }

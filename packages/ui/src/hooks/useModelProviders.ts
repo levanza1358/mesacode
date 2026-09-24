@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import type { ProviderSettingsFormProvider } from "@/lib/providerSettingsFormTypes.js";
 import type { ModelConnectivityResult } from "@zcode/shared";
 import type { ProviderSettingsView } from "@zcode/services";
+import type { ModelDiscoveryResult } from "@zcode/services";
 import { useServices } from "@/hooks/useServices.js";
 import { logger } from "@/logger.js";
 import { useProviderSettingsServiceView } from "@/hooks/useProviderSettingsView.js";
@@ -211,6 +212,34 @@ export function useModelProviders(target: {
     ],
   );
 
+  const discoverModels = useCallback(
+    async (providerId: string): Promise<ModelDiscoveryResult> => {
+      // 探测与连通性测试同源：远端激活没有本地 cwd 时 fail-closed，不能回退到远程路径。
+      const connectivityWorkspacePath = target.connectivityWorkspacePath?.trim();
+      if (
+        !connectivityWorkspacePath &&
+        (target.connectivityWorkspaceRequired || target.workspaceIdentity?.trim())
+      ) {
+        return {
+          models: [],
+          error: {
+            message:
+              target.connectivityUnavailableMessage ??
+              "A local workspace is unavailable for model discovery.",
+          },
+        };
+      }
+      return providerSettingsService.discoverModels({ providerId });
+    },
+    [
+      providerSettingsService,
+      target.connectivityUnavailableMessage,
+      target.connectivityWorkspacePath,
+      target.connectivityWorkspaceRequired,
+      target.workspaceIdentity,
+    ],
+  );
+
   return {
     modelProviders: effectiveModelProviders,
     providerTemplates: providerSettingsView?.providerTemplates ?? [],
@@ -232,6 +261,7 @@ export function useModelProviders(target: {
     reorderProviderModels,
     saveDisplayOrder,
     testModelConnectivity,
+    discoverModels,
     providerSettingsView,
   };
 }

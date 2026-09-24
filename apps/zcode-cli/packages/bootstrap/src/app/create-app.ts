@@ -68,6 +68,7 @@ import { createInputFacade } from "./input-facade.js";
 import { createPluginFacadeForApp } from "./plugin-facade.js";
 import { resolvePluginRuntimeFeatures } from "./plugin-runtime-features.js";
 import { createSessionFacade } from "./session-facade.js";
+import { createProviderModelDiscovery } from "./provider-model-discovery.js";
 import { resolveAppRuntimeConfig, runtimeConfigLogContext } from "./runtime-config.js";
 import {
   collectDynamicWorkflowDisabledSkillPaths,
@@ -854,6 +855,10 @@ export async function createZCodeApp(options: ZCodeAppOptions): Promise<ZCodeApp
         : { closeDynamicWorkflowRuns: () => dynamicWorkflowRunPort.close() }),
       configResult,
       configuredMcpServers,
+      discoverModels: createProviderModelDiscovery({
+        registry: options.providerRegistry,
+        httpClient: httpClientPort,
+      }),
       ...(options.configuredDefaultModelSelection
         ? {
             configuredDefaultModelSelection: options.configuredDefaultModelSelection,

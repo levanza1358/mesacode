@@ -23,7 +23,7 @@ export const providerLogoDataSchema = z
   .strict();
 
 const nonBlankRequiredString = z.string().refine((value) => value.trim().length > 0, {
-  message: "必填配置不能为空",
+  message: "Required configuration cannot be empty",
   params: { configIssueCode: "required-field-missing" },
 });
 

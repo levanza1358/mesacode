@@ -264,6 +264,11 @@ export function createDefaultSubagentPort(
           subagentContext: {
             agentPrompt: agentPrompt ?? "",
             ...(agentsMdInstructions ? { userInstructions: agentsMdInstructions } : {}),
+            // The persona layer follows the same injectAgentsMd gate, so a child that
+            // opts out of AGENTS.md also opts out of SOUL.md.
+            ...(agentsMdInstructions
+              ? { soulInstructions: this.contextSourceSnapshot?.soulInstructions }
+              : {}),
           },
           agentName: `zcode-${request.agentType}`,
           maxTurns: request.maxTurns ?? this.config.subagents?.maxTurns ?? 4,

@@ -134,6 +134,11 @@ export function getActiveTurnInfo(this: AgentRuntimeInternal): ActiveTurnInfo | 
 }
 
 export function getTools(this: AgentRuntimeInternal, model?: Model): ModelToolContract[] {
+  // Outside a detected Git workspace, keep model turns text-only. File, shell, and
+  // other environment tools have no useful workspace target there and can produce
+  // surprising side effects against the process cwd.
+  if (!isWorkspaceToolContext(this.config.envInfo)) return [];
+
   if (this.cachedTools === null) {
     this.cachedTools = filterRuntimeVisibleTools.call(this, this.registry.toContracts());
   }
@@ -144,6 +149,10 @@ export function getTools(this: AgentRuntimeInternal, model?: Model): ModelToolCo
         model,
       }),
     );
+}
+
+export function isWorkspaceToolContext(envInfo: { isGitRepository?: boolean } | undefined): boolean {
+  return envInfo?.isGitRepository === true;
 }
 
 export function invalidateToolCache(this: AgentRuntimeInternal): void {

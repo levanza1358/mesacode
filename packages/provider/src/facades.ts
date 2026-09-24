@@ -276,7 +276,7 @@ export class ProviderSettingsFacade {
         input.modelId,
       );
     }
-    // 此入口预览智能配置草稿；固定模式不请求推荐，重新开启时不能沿用旧固定标记。
+    // Preview smart-config drafts here; fixed mode skips recommendations and must not retain its marker.
     personalRules = personalRules.setExact(input.providerId, input.modelId, personalConfig, true);
     const config = ModelConfigRules.composeEffective(
       snapshot.config.zcodeBuiltinModelRules,

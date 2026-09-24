@@ -299,6 +299,41 @@ export class ModelConfig extends ConfigOverlay<ModelConfig> {
     return new ModelConfig();
   }
 
+  static customProviderDefaults(): ModelConfig {
+    return new ModelConfig({
+      properties: new ModelPropertiesConfig({
+        // A custom provider may still expose the search-patch tool; the built-in default source
+        // used to carry this leaf before the catalog was emptied, so keep the same default.
+        requiresMfjsToolSchema: true,
+        contextWindow: 128000,
+        inputFormat: {
+          supportsText: true,
+          supportsImage: false,
+          supportsVideo: false,
+          supportsAudio: false,
+          supportsPdf: false,
+        },
+        outputFormat: { supportsText: true },
+        supportsToolCall: true,
+        supportsJsonSchemaOutput: true,
+        supportsNativeWebSearch: false,
+        supportsMidConversationSystem: true,
+      }),
+      optionSpecs: new ModelOptionSpecsConfig({
+        reasoningLevel: {
+          values: ["low", "medium", "high"],
+          // Option-map object keys must be string literals; a bare key fails to compile and
+          // would make every custom model report an invalid option spec.
+          map: '{"reasoning_effort": reasoningLevel}',
+        },
+        maxOutputTokens: {
+          max: 128000,
+          map: '{"max_tokens": maxOutputTokens}',
+        },
+      }),
+    });
+  }
+
   static fromData(config: ModelConfigObject): ModelConfig {
     return new ModelConfig({
       enabled: config.enabled,
@@ -385,13 +420,13 @@ export class ModelConfigRules {
   }
 
   resolve(input: ModelConfigRuleResolutionInput): ModelConfig {
-    let result = ModelConfig.empty();
+    let result = ModelConfig.customProviderDefaults();
     const baseUrl = input.baseUrl == null ? undefined : normalizeBaseURLForRuleMatch(input.baseUrl);
     for (const rule of this.#rules) {
       if (isExactModelRule(rule)) {
         if (rule.providerId !== input.providerId || rule.modelId !== input.modelId) continue;
-        // 手动规则要求所有可编辑叶子齐全，因此可直接覆盖；系统叶子继续来自当前身份的规则。
-        // 清空整份基线会既丢失系统映射，也迫使 UI 把旧模型的隐藏配置复制进个人规则。
+        // Manual rules require every editable leaf, while system leaves still come from current rules.
+        // Clearing the full baseline would lose system mappings and force UI to copy hidden settings.
         result = (
           rule.type === "manual-provider-model"
             ? ModelConfig.fromData(clearManualModelConfig(result.toJSON()))
@@ -404,7 +439,7 @@ export class ModelConfigRules {
           result = result.overlay(rule.config);
         continue;
       }
-      // 只放宽推荐规则匹配，不改真实请求里的模型 ID。
+      // Broaden recommended-rule matching without changing the model ID sent in requests.
       if (!matchesRule(rule.modelMatch, input.modelId, true)) continue;
       if (
         (rule.type === "model-api" || rule.type === "provider-site") &&
@@ -419,7 +454,7 @@ export class ModelConfigRules {
         continue;
       result = result.overlay(rule.config);
     }
-    return result;
+    return ModelConfig.customProviderDefaults().overlay(result);
   }
 
   setExact(

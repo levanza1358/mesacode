@@ -183,6 +183,19 @@ export {
   IModelSelectionService,
   IProviderSettingsService,
 } from "./model-provider/providerFacadeServices.js";
+export type { ProviderSettingsModelDiscoveryRequest } from "./model-provider/providerFacadeServices.js";
+export {
+  createModelDiscoveryExecutor,
+  type CreateModelDiscoveryExecutorOptions,
+  type ModelDiscoveryProviderFacts,
+} from "./model-provider/modelDiscoveryExecutor.js";
+export {
+  parseModelCatalogPayload,
+  resolveModelCatalogUrl,
+  type ModelDiscoveryExecutor,
+  type ModelDiscoveryRequest,
+  type ModelDiscoveryResult,
+} from "./model-provider/modelCatalogDiscovery.js";
 export { createAccountRequestAuthService } from "./model-provider/accountRequestAuthService.js";
 export type { IAccountRequestAuthService } from "./model-provider/accountRequestAuthService.js";
 export { createAccountProviderRequestAuthService } from "./model-provider/accountProviderRequestAuthService.js";
@@ -378,6 +391,7 @@ import {
   IProviderSettingsService,
 } from "./model-provider/providerFacadeServices.js";
 import { createProviderSettingsConnectivityTester } from "./model-provider/providerSettingsConnectivity.js";
+import { createModelDiscoveryExecutor } from "./model-provider/modelDiscoveryExecutor.js";
 import {
   createProviderProvisioningSource,
   listProviderProvisioningCredentialKeys,
@@ -1624,6 +1638,12 @@ export function createLocalServices(options: {
         }
         return providerConnectivityAgentService.testModelConnectivity(input);
       },
+    }),
+    discoverModels: createModelDiscoveryExecutor({
+      apiClient,
+      // 探测必须使用目标 Environment 自己已解析的 Effective Config 与账号事实，
+      // 而不是本地缓存副本，才能与即将写入的模型归属保持一致。
+      readProviderFacts: (providerId) => providerRuntime.readEffectiveProviderFacts(providerId),
     }),
     disposeAccountSource: () => {
       disposeAccountProviderInvalidation();

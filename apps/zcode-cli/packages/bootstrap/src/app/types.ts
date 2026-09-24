@@ -1,4 +1,5 @@
 import type { ZCodeToolExecResource, BackgroundBashOutputResult } from "@zcode/shared";
+import type { ZCodeProviderDiscoverModelsResult } from "@zcode/shared";
 import type { AiSdkModelAdapter } from "@zcode/adapters/model";
 import type {
   AgentRuntime,
@@ -534,6 +535,14 @@ export interface ZCodeApp {
     input: { selection: ModelSelection },
     options?: { abortSignal?: AbortSignal; traceContext?: TraceContext },
   ): Promise<void>;
+  /**
+   * Read-only probe of a provider's own model catalog endpoint.
+   * Returns failure as a value so the settings surface can render an inline message.
+   */
+  discoverModels(input: {
+    providerId: string;
+    abortSignal?: AbortSignal;
+  }): Promise<ZCodeProviderDiscoverModelsResult>;
   expertWorkflowStatus(options?: {
     abortSignal?: AbortSignal;
     definitionId?: string;

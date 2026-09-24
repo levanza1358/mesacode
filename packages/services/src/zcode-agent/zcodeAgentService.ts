@@ -68,6 +68,7 @@ import {
   zcodeProviderRuntimeHeadersCancelledSchema,
   zcodeProviderRuntimeHeadersRequestParamsSchema,
   zcodeProviderTestModelConnectivityResultSchema,
+  zcodeProviderDiscoverModelsResultSchema,
   zcodeOfficialMcpAuthHeadersRequestParamsSchema,
   summarizeOfficialMcpIdentityHeaders,
   zcodeProtocolEmptyResultSchema,
@@ -151,6 +152,7 @@ import type {
   ZCodeAgentInstallPluginParams,
   ZCodeAgentGenerateWorkspaceTextParams,
   ZCodeAgentTestModelConnectivityParams,
+  ZCodeAgentDiscoverModelsParams,
   ZCodeAgentGoalParams,
   ZCodeAgentGrantWorkspaceHookTrustParams,
   ZCodeAgentInitializeResult,
@@ -4412,6 +4414,26 @@ export function createZCodeAgentService(
           selection: params.selection,
         },
         zcodeProviderTestModelConnectivityResultSchema,
+        { signal: params.signal },
+      );
+    },
+
+    async discoverModels(params: ZCodeAgentDiscoverModelsParams) {
+      const client = await getClient(params);
+      // 探测必须使用目标 Environment 已解析的凭据；先同步 Account Provider Config，
+      // 避免探测到刚保存前的旧配置。
+      await ensureAccountProviderConfigSynced({
+        client,
+        reason: "provider_discover_models",
+        workspace: params,
+      });
+      return client.request(
+        zcodeProtocolMethods.providerDiscoverModels,
+        {
+          workspace: buildWorkspaceRef(params),
+          providerId: params.providerId,
+        },
+        zcodeProviderDiscoverModelsResultSchema,
         { signal: params.signal },
       );
     },

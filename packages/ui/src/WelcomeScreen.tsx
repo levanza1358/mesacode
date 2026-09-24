@@ -18,7 +18,7 @@ import {
 } from "@zcode/shared";
 import { Alert, AlertDescription } from "./components/ui/alert.js";
 import { Button } from "./components/ui/button.js";
-import { ZCodeAboutLogo } from "@/components/ui/ZCodeAboutLogo.js";
+import { MesaCodeAboutLogo } from "@/components/ui/MesaCodeAboutLogo.js";
 import { useOAuth } from "./hooks/useOAuth.js";
 import { useZCodeIntl } from "./i18n/IntlProvider.js";
 import { LoginApiKeyForm } from "./login/LoginApiKeyForm.js";
@@ -480,7 +480,7 @@ function LoginPanelLogo() {
       aria-label="ZCode"
       role="img"
     >
-      <ZCodeAboutLogo className="h-auto w-10" />
+      <MesaCodeAboutLogo className="h-auto w-10" />
     </div>
   );
 }

@@ -18,6 +18,16 @@ export {
 } from "./model-provider/accountRequestAuthService.js";
 export { IProviderProvisioningTargetService } from "./model-provider/providerProvisioning.js";
 export {
+  parseModelCatalogPayload,
+  resolveModelCatalogUrl,
+  type ModelCatalogApiFacts,
+  type ModelDiscoveryExecutor,
+  type ModelDiscoveryRequest,
+  type ModelDiscoveryResult,
+} from "./model-provider/modelCatalogDiscovery.js";
+export type { ModelDiscoveryProviderFacts } from "./model-provider/modelDiscoveryExecutor.js";
+export type { ProviderSettingsModelDiscoveryRequest } from "./model-provider/providerFacadeServices.js";
+export {
   collectServiceMemoryDiagnostics,
   memoryDiagnosticsRegistry,
   registerMemoryDiagnosticsProvider,

@@ -18,6 +18,7 @@ import {
   WandSparkles,
   Keyboard,
   FileSearch,
+  Heart,
 } from "lucide-react";
 import { isSettingsSectionEnabled, type SettingsSectionId } from "@/lib/settingsNavigation.js";
 import type { Theme } from "@/useTheme.js";
@@ -29,6 +30,13 @@ export const THEME_MODES: Array<{
   { mode: "system", icon: Monitor },
   { mode: "zai-dark", icon: Moon },
   { mode: "zai-light", icon: Sun },
+  { mode: "black", icon: Moon },
+  { mode: "midnight", icon: Moon },
+  { mode: "ocean", icon: Globe2 },
+  { mode: "forest", icon: Anchor },
+  { mode: "purple", icon: WandSparkles },
+  { mode: "rose", icon: Heart },
+  { mode: "amber", icon: AlarmClock },
 ];
 
 type SettingsSectionGroupId = "basics" | "agentCapabilities" | "dataAndStats";
@@ -77,6 +85,12 @@ const BASE_SETTINGS_SECTIONS: SettingsSectionDefinition[] = [
     id: "memory",
     icon: Brain,
     titleId: "settings.memory",
+    groupId: "agentCapabilities",
+  },
+  {
+    id: "soul",
+    icon: Heart,
+    titleId: "settings.soul.title",
     groupId: "agentCapabilities",
   },
   {

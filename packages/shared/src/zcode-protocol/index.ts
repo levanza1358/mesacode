@@ -2143,6 +2143,25 @@ export type ZCodeProviderTestModelConnectivityResult = z.infer<
   typeof zcodeProviderTestModelConnectivityResultSchema
 >;
 
+export const zcodeProviderDiscoverModelsParamsSchema = z
+  .object({
+    workspace: zcodeWorkspaceRefSchema,
+    providerId: nonEmptyString,
+  })
+  .strict();
+export const zcodeProviderDiscoverModelsResultSchema = z
+  .object({
+    models: z.array(z.string()),
+    error: z.object({ message: z.string() }).strict().optional(),
+  })
+  .strict();
+export type ZCodeProviderDiscoverModelsParams = z.infer<
+  typeof zcodeProviderDiscoverModelsParamsSchema
+>;
+export type ZCodeProviderDiscoverModelsResult = z.infer<
+  typeof zcodeProviderDiscoverModelsResultSchema
+>;
+
 export const zcodeProviderUpdateAccountConfigParamsSchema = z
   .object({
     revision: nonEmptyString,
@@ -3610,6 +3629,9 @@ export const zcodeProtocolMethods = {
   workspaceGenerateText: "workspace/generateText",
   workspaceCancelGenerateText: "workspace/cancelGenerateText",
   providerTestModelConnectivity: "provider/testModelConnectivity",
+  // Read-only probe of a provider's own model catalog; the CLI owns credential
+  // resolution, so the settings surface cannot fetch it directly.
+  providerDiscoverModels: "provider/discoverModels",
   mcpList: "mcp/list",
   pluginsList: "plugins/list",
   pluginsReferenceCatalog: "plugins/referenceCatalog",

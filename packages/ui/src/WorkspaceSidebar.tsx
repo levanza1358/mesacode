@@ -46,7 +46,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Locale, RemoteTarget, UserInfo, ZCodeTaskMeta } from "@zcode/shared";
+import type { RemoteTarget, UserInfo, ZCodeTaskMeta } from "@zcode/shared";
 import { BUILTIN_MODEL_PROVIDER_IDS } from "@zcode/shared";
 import {
   TID_CONVERSATION_NEW_TASK,
@@ -315,7 +315,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
   pluginStoreActive?: boolean;
   onFileTreeOpenChange?: (open: boolean) => void;
 }) {
-  const { intl, localePreference, setLocalePreference } = useZCodeIntl();
+  const { intl } = useZCodeIntl();
   const handleTaskRowSelect = useCallback(
     (
       targetWorkspacePath: string,
@@ -626,7 +626,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
-  const localeMenuValue = localePreference === "system" ? "system" : localePreference;
   const workspaceTaskLists = useWorkspaceTaskLists({
     workspaceTabs: projectWorkspaceTabs,
     activeWorkspacePath: workspacePath,
@@ -734,19 +733,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
       }
     },
     [setTheme],
-  );
-
-  const handleLocaleChange = useCallback(
-    (value: string) => {
-      if (value === "system") {
-        setLocalePreference("system");
-        return;
-      }
-      if (value === "zh-CN" || value === "en-US") {
-        setLocalePreference(value as Locale);
-      }
-    },
-    [setLocalePreference],
   );
 
   const handleOpenPluginStoreMain = useCallback(() => {
@@ -1645,8 +1631,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
           <WorkspaceSidebarFooter
             className="pr-3"
             theme={theme}
-            localeMenuValue={localeMenuValue}
-            onLocaleChange={handleLocaleChange}
             onThemeChange={handleThemeChange}
             onSettingsButtonClick={openSettingsTab}
             onUsageClick={openSettingsTab}

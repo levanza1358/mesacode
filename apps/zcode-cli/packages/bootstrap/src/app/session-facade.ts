@@ -29,6 +29,7 @@ import { createSubagentObservation } from "./subagent-observation.js";
 import { getLocaleConfigPath } from "./locale-selection.js";
 import { isClosableSessionStore } from "./session-store.js";
 import type { ProviderRegistryModelSource } from "./provider-registry-model-runtime.js";
+import type { ProviderModelDiscovery } from "./provider-model-discovery.js";
 import {
   completeAuxiliaryRegistryModelSelection,
   getRegistryBackedModel,
@@ -52,6 +53,7 @@ type SessionFacade = Pick<
   | "disconnectMcpServer"
   | "generateWorkspaceText"
   | "testModelConnectivity"
+  | "discoverModels"
   | "forkFromCheckpoint"
   | "getMode"
   | "getModel"
@@ -102,6 +104,8 @@ interface CreateSessionFacadeDeps {
   configResult: ConfigResult;
   configuredMcpServers: Record<string, McpServerConfig>;
   configuredDefaultModelSelection?: ModelSelection;
+  /** Provider 模型目录探测端口；由 bootstrap 持有 Registry 与 HTTP 装配。 */
+  discoverModels: ProviderModelDiscovery;
   executionPort: ExecutionPort;
   localSettingStore?: LocalSettingStorePort;
   logger: Logger;
@@ -419,6 +423,10 @@ export function createSessionFacade(deps: CreateSessionFacadeDeps): SessionFacad
           traceContext: options?.traceContext ?? deps.traceContext,
         },
       );
+    },
+    discoverModels: async (input) => {
+      // 探测读的是目标 Environment 已解析的 Registry；App 不缓存 Provider 事实。
+      return deps.discoverModels(input);
     },
     setMode: async (mode: CollaborationMode) => {
       const previousMode = deps.runtime.getMode();

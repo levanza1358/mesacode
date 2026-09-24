@@ -7,6 +7,7 @@ import {
   type ProviderSettingsFormModel,
 } from "@/lib/providerSettingsFormTypes.js";
 import type { ModelConnectivityResult } from "@zcode/shared";
+import type { ModelDiscoveryResult } from "@zcode/services";
 import {
   isApiKeyAccess,
   type ProviderApiType,
@@ -144,6 +145,7 @@ export function InlineEditableProviderCard({
   onDeletePersonalModel,
   onDelete,
   onTestModel,
+  onDiscoverModels,
   onReorderModelIds,
   readOnlyEndpoints,
   presetApiKeyUrl,
@@ -171,6 +173,7 @@ export function InlineEditableProviderCard({
   onDeletePersonalModel?: (providerId: string, modelId: string) => Promise<unknown>;
   onDelete?: () => void | Promise<void>;
   onTestModel?: (providerId: string, modelId: string) => Promise<ModelConnectivityResult>;
+  onDiscoverModels?: (providerId: string) => Promise<ModelDiscoveryResult>;
   onReorderModelIds?: (modelIds: string[]) => Promise<void>;
   readOnlyEndpoints?: boolean;
   presetApiKeyUrl?: string;
@@ -716,13 +719,29 @@ export function InlineEditableProviderCard({
             provider.providerId,
             added.modelId,
             structuredClone(added.personalConfig),
-            added.useRecommendedConfig,
+            added.useRecommendedConfig ?? true,
           );
         },
         { modelId: added.modelId, draftOwnsRetry: true },
       );
     },
     [onAddPersonalModel, provider.providerId, runSaveOperation],
+  );
+
+  // 批量导入发现到的模型：逐个串行提交，保持与手动添加同一写路径和错误边界。
+  const handleAddDiscoveredModels = useCallback(
+    async (modelIds: readonly string[]): Promise<string[]> => {
+      if (!onAddPersonalModel) throw new Error("当前设置入口未装配 Personal Model 添加能力");
+      const added: string[] = [];
+      for (const modelId of modelIds) {
+        const trimmed = modelId.trim();
+        if (!trimmed) continue;
+        await onAddPersonalModel(provider.providerId, trimmed, {}, true);
+        added.push(trimmed);
+      }
+      return added;
+    },
+    [onAddPersonalModel, provider.providerId],
   );
 
   const handleReorderModelIds = useCallback(
@@ -848,6 +867,10 @@ export function InlineEditableProviderCard({
           providerAccess={provider.config.access}
           models={models}
           onTestModel={onTestModel ? handleTestModel : undefined}
+          onDiscoverModels={
+            onDiscoverModels ? () => onDiscoverModels(provider.providerId) : undefined
+          }
+          onAddDiscoveredModels={onAddPersonalModel ? handleAddDiscoveredModels : undefined}
           onModelCommit={handleModelCommit}
           onModelEnabledChange={handleModelEnabledChange}
           onDeleteModel={handleDeleteModel}

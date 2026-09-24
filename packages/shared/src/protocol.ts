@@ -71,10 +71,10 @@ export interface SystemInfo {
   platform: string;
 }
 
-/** 支持的语言 */
+/** Compatibility locale values retained for persisted settings and protocol payloads. */
 export type Locale = "zh-CN" | "en-US";
 
-/** 界面语言偏好；system 表示跟随当前运行端系统语言。 */
+/** Compatibility preference values; the renderer always resolves them to en-US. */
 export type LocalePreference = "system" | Locale;
 
 /** ZCode 运行中继续输入时的交互行为 */
@@ -106,8 +106,8 @@ export interface IntegratedTerminalShellOption {
   source: "system" | "path";
 }
 
-/** 默认语言 */
-export const DEFAULT_LOCALE: Locale = "zh-CN";
+/** Fixed product UI language. Legacy locale values remain readable for compatibility. */
+export const DEFAULT_LOCALE: Locale = "en-US";
 
 // ── Workspace / Tab ──
 

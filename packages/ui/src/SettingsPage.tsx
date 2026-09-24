@@ -1,5 +1,5 @@
 /* oxlint-disable eslint(max-lines) */
-import { ArrowLeft, Rocket, type LucideIcon } from "lucide-react";
+import { ArrowLeft, type LucideIcon } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -12,7 +12,6 @@ import type {
   AppSettings,
   IntegratedTerminalShellOption,
   IntegratedTerminalShellSelection,
-  Locale,
   UsageEntitlementSnapshot,
   UserInfo,
   ZCodeInteractionBehavior,
@@ -70,6 +69,7 @@ import { PluginsSection } from "@/settings/PluginsSection.js";
 import { HooksSection } from "@/settings/HooksSection.js";
 import { WorkspaceFileSearchSection } from "@/settings/WorkspaceFileSearchSection.js";
 import { MemorySettingsSection } from "@/settings/MemorySettingsSection.js";
+import { SoulSection } from "@/settings/SoulSection.js";
 import { BrowserSettingsSection } from "@/settings/BrowserSettingsSection.js";
 import { ComputerUseSection } from "@/settings/ComputerUseSection.js";
 import { ShortcutSettingsSection } from "@/settings/ShortcutSettingsSection.js";
@@ -294,7 +294,7 @@ export function SettingsPage({
   onLogout?: () => void;
   user?: UserInfo | null;
 }) {
-  const { intl, localePreference, setLocalePreference } = useZCodeIntl();
+  const { intl } = useZCodeIntl();
   const { settingsSectionGroups, settingsSections } = useMemo(
     () =>
       createSettingsPageConfig({
@@ -589,8 +589,6 @@ export function SettingsPage({
         : "app",
     );
   }, [selectedUsageCodingPlanSource, usageActiveTab, usageCodingPlanSources]);
-  const setNewUserOnboardingOpen = useZCodeStore((state) => state.setNewUserOnboardingOpen);
-  const requestOnboardingDialog = () => setNewUserOnboardingOpen(true);
   const setActiveSettingsSection = useCallback(
     (section: SettingsSectionId, fallbackSection: SettingsSectionId = activeSection) => {
       const resolvedSection = resolveSettingsSection(section, fallbackSection);
@@ -1264,28 +1262,6 @@ export function SettingsPage({
     },
     [updateSharedSettings],
   );
-  const handleFooterLocaleChange = useCallback(
-    (value: string) => {
-      if (value === "system") {
-        runUserAction({
-          input: { featureId: "settings.locale", action: "change_locale", trigger: "select" },
-          operation: () => setLocalePreference("system"),
-          completed: { resultSource: "local_commit", valueAfter: "system" },
-          failureStage: "local_commit",
-        });
-        return;
-      }
-      if (value === "zh-CN" || value === "en-US") {
-        runUserAction({
-          input: { featureId: "settings.locale", action: "change_locale", trigger: "select" },
-          operation: () => setLocalePreference(value as Locale),
-          completed: { resultSource: "local_commit", valueAfter: value },
-          failureStage: "local_commit",
-        });
-      }
-    },
-    [setLocalePreference],
-  );
   const handleFooterThemeChange = useCallback(
     (value: string) => {
       if (
@@ -1506,34 +1482,11 @@ export function SettingsPage({
                   })}
                 </div>
 
-                <SettingsSidebarButton
-                  icon={Rocket}
-                  label={intl.formatMessage({ id: "settings.onboarding" })}
-                  className="mt-4 border border-dashed border-border hover:border-border-hover"
-                  onClick={() => {
-                    runUserAction({
-                      input: {
-                        featureId: "settings.navigation",
-                        action: "open_onboarding",
-                        trigger: "button",
-                      },
-                      operation: requestOnboardingDialog,
-                      completed: { resultSource: "local_commit" },
-                      failureStage: "dialog_open",
-                    });
-                  }}
-                >
-                  <span className="text-ui-base text-foreground">
-                    {intl.formatMessage({ id: "settings.onboarding" })}
-                  </span>
-                </SettingsSidebarButton>
               </nav>
 
               <div className="max-lg:hidden">
                 <WorkspaceSidebarFooter
                   theme={theme}
-                  localeMenuValue={localePreference}
-                  onLocaleChange={handleFooterLocaleChange}
                   onThemeChange={handleFooterThemeChange}
                   onSettingsButtonClick={onBack}
                   onUsageClick={handleOpenUsageSettings}
@@ -1646,14 +1599,11 @@ export function SettingsPage({
                             ) : null}
                           </div>
                         </div>
-                        {activeSection === "general" ? (
-                          <GeneralSectionHeader localePreference={localePreference} />
-                        ) : null}
+                        {activeSection === "general" ? <GeneralSectionHeader /> : null}
                       </div>
                       <div className="space-y-8">
                         {activeSection === "general" ? (
                           <GeneralSectionContent
-                            localePreference={localePreference}
                             interfaceMode={interfaceMode}
                             setInterfaceMode={setInterfaceMode}
                             isDesktop={isDesktop}
@@ -1679,7 +1629,6 @@ export function SettingsPage({
                             httpProxyCaCertPath={httpProxyCaCertPath}
                             defaultHomeDir={defaultHomeDir}
                             showIntegratedTerminalShell={hostPlatform === "win32"}
-                            setLocalePreference={handleFooterLocaleChange}
                             setNotificationEnabled={(enabled) =>
                               runUserAction({
                                 input: {
@@ -1768,18 +1717,6 @@ export function SettingsPage({
                             onAskUserQuestionAutoResolutionEnabledChange={
                               handleAskUserQuestionAutoResolutionEnabledChange
                             }
-                            onOpenOnboardingDialog={() =>
-                              runUserAction({
-                                input: {
-                                  featureId: "settings.navigation",
-                                  action: "open_onboarding",
-                                  trigger: "button",
-                                },
-                                operation: requestOnboardingDialog,
-                                completed: { resultSource: "local_commit" },
-                                failureStage: "dialog_open",
-                              })
-                            }
                           />
                         ) : activeSection === "appearance" ? (
                           <AppearanceSectionContent
@@ -1832,6 +1769,11 @@ export function SettingsPage({
                               workspaceDisplayNames={memoryWorkspaceDisplayNames}
                             />
                           </ServiceProvider>
+                        ) : activeSection === "soul" ? (
+                          <SoulSection
+                            workspacePath={activeWorkspacePath}
+                            workspaceIdentity={activeWorkspaceIdentity}
+                          />
                         ) : activeSection === "plugin" ? (
                           <PluginsSection
                             key={`plugin:${settingsSectionNavigationVersion}`}

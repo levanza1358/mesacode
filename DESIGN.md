@@ -1,4 +1,4 @@
-# ZCode Design System
+# Mesa Code Design System
 
 Portable design system for AI-assisted UI work in this repository.
 
@@ -19,7 +19,7 @@ Treat violations of this section as design-system defects, not stylistic prefere
 
 ## Product Character
 
-ZCode is a desktop-first and web-compatible AI workspace. The interface should feel calm, dense, and operational rather than decorative.
+Mesa Code is a desktop-first and web-compatible AI workspace. The interface should feel calm, dense, and operational rather than decorative.
 
 Design for:
 
@@ -30,7 +30,8 @@ Design for:
 - desktop and web parity
 - macOS, Windows, and Linux compatibility
 - internationalization and variable text length
-- light and dark themes, plus Zai variants already supported by the codebase
+- System, Zai Light, Zai Dark, Black, Midnight, Ocean, Forest, Purple, Rose, and Amber themes
+- independent accent palettes using semantic color tokens
 
 Avoid:
 
@@ -46,8 +47,9 @@ User-facing theme choices are:
 - System
 - Light Theme, backed by Zai Light
 - Dark Theme, backed by Zai Dark
+- Black, Midnight, Ocean, Forest, Purple, Rose, and Amber
 
-Default light and dark CSS variables still exist as fallback foundations, but new UI should be validated against Zai Light and Zai Dark as the active light/dark experiences.
+Default light and dark CSS variables still exist as fallback foundations. New UI must use semantic tokens and remain readable across every catalog theme.
 
 ## Color Palette
 

@@ -39,21 +39,16 @@ const runtimeModuleLookupRoots = [
   resolve(workspaceRoot, "node_modules", ".pnpm", "node_modules"),
 ];
 const pnpmCommand = "pnpm";
-const DEFAULT_TARGET_OS = "mac";
-const DEFAULT_TARGET_ARCH = "arm64";
+const DEFAULT_TARGET_OS = "win";
+const DEFAULT_TARGET_ARCH = "x64";
 const desktopDistDir = process.env.ZCODE_DESKTOP_DIST_DIR || "dist";
 const desktopDistRoot = resolve(desktopRoot, desktopDistDir);
 const desktopProductIdentity = resolveDesktopProductIdentity(process.env);
 
 const osAliasMap = new Map([
-  ["mac", "mac"],
-  ["macos", "mac"],
-  ["darwin", "mac"],
-  ["osx", "mac"],
   ["win", "win"],
   ["windows", "win"],
   ["win32", "win"],
-  ["linux", "linux"],
 ]);
 
 const archAliasMap = new Map([
@@ -65,9 +60,7 @@ const archAliasMap = new Map([
 ]);
 
 const osBuilderFlagMap = {
-  mac: "--mac",
   win: "--win",
-  linux: "--linux",
 };
 
 const archBuilderFlagMap = {
@@ -76,9 +69,7 @@ const archBuilderFlagMap = {
 };
 
 const artifactExtensionsByOs = {
-  mac: [".dmg", ".zip"],
   win: [".exe"],
-  linux: [".AppImage", ".deb", ".rpm", ".pkg.tar.zst"],
 };
 const artifactArchHintsByArch = {
   x64: ["x64", "x86_64", "amd64"],
@@ -249,8 +240,8 @@ function printHelp() {
   pnpm bundle:desktop -- linux arm64
 
 参数:
-  --os, -o <mac|win|linux>     目标操作系统，默认 mac
-  --arch, -a <x64|arm64>       目标 CPU 架构，默认 arm64
+  --os, -o <win>               target OS, default win
+  --arch, -a <x64>              target CPU architecture, default x64
   --skip-prepare               跳过 prepare:runtime-assets
   --skip-build                 跳过 pnpm build
   --dry-run                    只打印最终命令，不执行打包
@@ -265,7 +256,7 @@ function printHelp() {
 function normalizeOs(rawOs) {
   const normalizedOs = osAliasMap.get(rawOs.toLowerCase());
   if (!normalizedOs) {
-    throw new Error(`不支持的目标操作系统: ${rawOs}`);
+    throw new Error(`Unsupported target OS: ${rawOs}. Mesa Code desktop packaging supports Windows only.`);
   }
   return normalizedOs;
 }

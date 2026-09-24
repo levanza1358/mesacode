@@ -1,5 +1,6 @@
 /**
- * RPC 调用网络遥测：记录 channel.command 级成功率与耗时，供桌面主进程聚合上报 ARMS。
+ * RPC network telemetry: records channel.command-level success rate and duration for the desktop
+ * main process to aggregate and report to ARMS.
  */
 import type { IChannelServer, IChannelClient, IChannel, IServerChannel } from "./channels.js";
 import type { CancellationToken } from "./foundation.js";
@@ -121,7 +122,7 @@ class NetworkTelemetryChannel implements IChannel {
   }
 }
 
-/** 装饰 ChannelServer，为 RPC call 写入网络遥测 */
+/** Decorates ChannelServer and records network telemetry for RPC calls. */
 export class NetworkTelemetryChannelServer<TContext = string> implements IChannelServer<TContext> {
   constructor(private inner: IChannelServer<TContext>) {}
 
@@ -137,7 +138,7 @@ export class NetworkTelemetryChannelServer<TContext = string> implements IChanne
   }
 }
 
-/** 装饰 ChannelClient（renderer 侧可选，与 server 侧二选一即可避免双计） */
+/** Decorates ChannelClient; optional on the renderer side to avoid double counting with the server. */
 export class NetworkTelemetryChannelClient implements IChannelClient {
   constructor(private inner: IChannelClient) {}
 
