@@ -8,6 +8,8 @@ Strict migration approved: Mesa Code is the only supported internal product iden
 
 Migrate internal product identifiers from Mesacode to Mesa Code without losing existing sessions, workspaces, plugins, protocol compatibility, or user data.
 
+The first-install occupation/interface onboarding screen is removed from the product flow. A fresh install must enter the normal application surface directly without asking for occupation, interface mode, memory, or suggestion preferences.
+
 ## Migration boundary
 
 In scope:
@@ -31,6 +33,7 @@ Out of scope for first slice:
 - CLI/runtime: protocol and environment compatibility.
 - Packaging scripts: artifact and distribution naming.
 - UI: user-facing labels only; no direct storage migration logic.
+- UI startup: normal application startup owns the first-render path; no occupation onboarding gate may wrap `RootWorkspaceContent` or the settings surface.
 
 ## Required compatibility rules
 
@@ -58,5 +61,6 @@ Out of scope for first slice:
 - Only canonical Mesa Code environment variables are accepted.
 - Legacy protocol peers are rejected with an actionable error.
 - Restarting migration does not duplicate or corrupt data.
+- A fresh install opens the normal application without rendering the occupation onboarding screen.
 - Installer rollback leaves original Mesacode data intact.
 - `pnpm typecheck`, `pnpm lint`, and `pnpm architecture:check --changed` pass after each phase.
