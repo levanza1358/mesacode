@@ -42,7 +42,6 @@ export { WSL_USER_MAX_LENGTH, isValidWslUser, wslUserSchema } from "./wslUserVal
 export { mesacodeTaskModeSchema } from "./mesacode-task-mode-schema.js";
 import { wslUserSchema } from "./wslUserValidation.js";
 export {
-  appSettingsOccupationEnum,
   appSettingsPatchSchema,
   appSettingsSchema,
   localeSchema,

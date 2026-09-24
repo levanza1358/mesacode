@@ -1071,7 +1071,7 @@ function ReadonlyTurn({
 export function ConversationShareReadonlyTimeline({
   rows,
   locale = "zh-CN",
-  theme = "system",
+  theme = "dark",
   codePreviewSettings = DEFAULT_CODE_PREVIEW_SETTINGS,
   artifactUrls = EMPTY_ARTIFACT_URLS,
   artifactNames = EMPTY_ARTIFACT_NAMES,

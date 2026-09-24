@@ -42,7 +42,6 @@ import { logger } from "@/logger.js";
 import { RootShell } from "@/root/RootShell.js";
 import { RootWorkspaceContent } from "@/root/RootWorkspaceContent.js";
 import { resolveRootWorkspaceShellTarget } from "@/root/rootWorkspaceShellTarget.js";
-import { OnboardingDialog } from "@/onboarding/OnboardingDialog.js";
 import { useRemoteWorkspaceHistory } from "@/root/useRemoteWorkspaceHistory.js";
 import { useRemoteWorkspaceTabLifecycle } from "@/root/useRemoteWorkspaceTabLifecycle.js";
 import { useRootProviderStateRefresh } from "@/root/useRootProviderStateRefresh.js";
@@ -1040,17 +1039,6 @@ function RootInner({
           supportsEmbeddedBrowser={supportsEmbeddedBrowser}
         />
       )}
-      <ScopedErrorBoundary
-        scope="onboarding-dialog"
-        resetKeys={[workspaceShellIdentity?.trim() || workspaceShellPath]}
-        variant="silent"
-      >
-        <OnboardingDialog
-          workspacePath={workspaceShellPath || undefined}
-          workspaceIdentity={workspaceShellIdentity}
-          isDesktop={isDesktop}
-        />
-      </ScopedErrorBoundary>
     </RootShell>
   );
 }

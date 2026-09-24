@@ -54,7 +54,7 @@ interface PreviewPaneContentProps {
   codePreviewSettings: CodePreviewSettings;
   codeTheme: BundledTheme;
   resolvedTheme: "light" | "dark";
-  /** 应用主题（store 耦合剥离）：透传给 markdown/mermaid 预览，缺省按 "system" 兜底。 */
+  /** 应用主题（store 耦合剥离）：透传给 markdown/mermaid 预览，缺省按 dark 兜底。 */
   theme?: Theme;
   workspacePath?: string;
   onOpenBrowserUrl?: (url: string) => void;

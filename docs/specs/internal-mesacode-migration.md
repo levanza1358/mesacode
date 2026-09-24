@@ -8,7 +8,9 @@ Strict migration approved: Mesa Code is the only supported internal product iden
 
 Migrate internal product identifiers from Mesacode to Mesa Code without losing existing sessions, workspaces, plugins, protocol compatibility, or user data.
 
-The first-install occupation/interface onboarding screen is removed from the product flow. A fresh install must enter the normal application surface directly without asking for occupation, interface mode, memory, or suggestion preferences.
+All product onboarding is removed. A fresh install must enter the normal application surface directly, and the product must not expose occupation, interface-mode, memory, suggestion, migration, or onboarding-record flows. OS permission setup flows, such as CUA accessibility permission, are not product onboarding and remain available where required.
+
+The application theme contract is limited to `light`, `dark`, and `black`. `dark` is the default for new and invalid preferences. Theme-specific accent palettes and accent selection are not supported; the semantic `accent` token remains an internal UI token for existing component states.
 
 ## Migration boundary
 
@@ -33,7 +35,8 @@ Out of scope for first slice:
 - CLI/runtime: protocol and environment compatibility.
 - Packaging scripts: artifact and distribution naming.
 - UI: user-facing labels only; no direct storage migration logic.
-- UI startup: normal application startup owns the first-render path; no occupation onboarding gate may wrap `RootWorkspaceContent` or the settings surface.
+- UI startup: normal application startup owns the first-render path; no product onboarding gate may wrap `RootWorkspaceContent` or the settings surface.
+- UI appearance: `useTheme` owns the three-value theme preference and applies `dark` by default; no theme catalog or accent-palette selector is exposed.
 
 ## Required compatibility rules
 
@@ -61,6 +64,7 @@ Out of scope for first slice:
 - Only canonical Mesa Code environment variables are accepted.
 - Legacy protocol peers are rejected with an actionable error.
 - Restarting migration does not duplicate or corrupt data.
-- A fresh install opens the normal application without rendering the occupation onboarding screen.
+- A fresh install opens the normal application without rendering any product onboarding screen or migration wizard.
+- Invalid, missing, and legacy theme preferences resolve to `dark`; only `light`, `dark`, and `black` can be selected.
 - Installer rollback leaves original Mesacode data intact.
 - `pnpm typecheck`, `pnpm lint`, and `pnpm architecture:check --changed` pass after each phase.

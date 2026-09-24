@@ -204,7 +204,7 @@ export interface ToolCallBlockRenderContext {
    * 应用主题（store 耦合剥离）：由构建 render context 的宿主
    * （ToolCallBlock / PermissionDialog 等）从上层状态传入，供
    * MessageResponse / EditInlineDiffContent 等展示组件做 light/dark 分流。
-   * 缺省时展示组件按 "system" 兜底。
+  * 缺省时展示组件按 dark 兜底。
    */
   theme?: Theme;
   /** 代码预览设置（store 耦合剥离）：同上，由宿主传入并保持引用稳定。 */

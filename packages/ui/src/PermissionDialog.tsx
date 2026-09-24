@@ -443,7 +443,7 @@ export function PermissionDialog({
 }) {
   const { intl } = useMesacodeIntl();
   // store 耦合剥离：主题/代码预览设置在宿主处取 store，向下走 props/render context。
-  const theme = useMesacodeStoreWithDefault((state) => state.theme, "system");
+  const theme = useMesacodeStoreWithDefault((state) => state.theme, "dark");
   const codePreviewSettings = useMesacodeStoreWithDefault(
     (state) => state.codePreviewSettings,
     DEFAULT_CODE_PREVIEW_SETTINGS,

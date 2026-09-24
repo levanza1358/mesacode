@@ -26,7 +26,7 @@ const PlanDetailContent = memo(function PlanDetailContent({
   const { layer } = useV4Conversation();
   const [lease, setLease] = useState<SessionLease | null>(null);
   const [lastMarkdown, setLastMarkdown] = useState(tab.markdown);
-  const theme = useMesacodeStoreWithDefault((state) => state.theme, "system");
+  const theme = useMesacodeStoreWithDefault((state) => state.theme, "dark");
   const codePreviewSettings = useMesacodeStoreWithDefault(
     (state) => state.codePreviewSettings,
     DEFAULT_CODE_PREVIEW_SETTINGS,

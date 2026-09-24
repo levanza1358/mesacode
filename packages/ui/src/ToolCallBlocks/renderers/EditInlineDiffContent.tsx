@@ -20,30 +20,20 @@ function resolveInlineDiffHighlightTheme(
   theme: Theme | undefined,
   codePreviewSettings: CodePreviewSettings,
 ): BundledTheme {
-  if (theme === "system") {
-    if (typeof window !== "undefined") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? codePreviewSettings.darkTheme
-        : codePreviewSettings.lightTheme;
-    }
-
-    return codePreviewSettings.lightTheme;
-  }
-
-  return theme === "dark" || theme === "zai-dark"
+  return theme === "dark" || theme === "black"
     ? codePreviewSettings.darkTheme
     : codePreviewSettings.lightTheme;
 }
 
 export const EditInlineDiffContent = memo(function EditInlineDiffContent({
   preview,
-  theme = "system",
+  theme = "dark",
   codePreviewSettings = DEFAULT_CODE_PREVIEW_SETTINGS,
 }: {
   preview: PatchCodeViewerSource;
   /**
    * 应用主题（store 耦合剥离）：决定 diff 高亮取 light/dark 主题。
-   * 由调用方（tool call 渲染上下文）传入；默认 "system" 跟随操作系统兜底。
+  * 由调用方（tool call 渲染上下文）传入；默认 dark 兜底。
    */
   theme?: Theme;
   /** 代码预览设置（store 耦合剥离）：由调用方传入，需保持引用稳定。 */

@@ -199,12 +199,6 @@ export interface MesacodeState {
     reservation: CodingPlanQuotaResetAutoPlayReservation,
   ) => Promise<void>;
 
-  /** 手动请求打开 onboarding 弹窗 */
-  newUserOnboardingOpen: boolean;
-  setNewUserOnboardingOpen: (open: boolean) => void;
-  onboardingDialogRequested: boolean | "migration";
-  requestOnboardingDialog: (entry?: "migration") => void;
-  clearOnboardingDialogRequest: () => void;
 }
 
 // ============================================================================
@@ -252,9 +246,9 @@ export function createMesacodeStore(
       writeSafeLocalStorage(INTERFACE_MODE_STORAGE_KEY, interfaceMode);
       set({ interfaceMode });
     },
-    // 默认主题统一收敛到 Zai dark，避免首次启动时 store 与其他主题入口表现不一致。
+    // Default to dark so the store and every theme entry point agree on first launch.
     // 仍然优先尊重 localStorage 中已保存的用户选择，不覆盖已有偏好。
-    theme: normalizeThemePreference((readSafeLocalStorage("mesacode-theme") as Theme) || "zai-dark"),
+    theme: normalizeThemePreference((readSafeLocalStorage("mesacode-theme") as Theme) || "dark"),
     setTheme: (theme: Theme) => {
       const normalizedTheme = normalizeThemePreference(theme);
       writeSafeLocalStorage("mesacode-theme", normalizedTheme);
@@ -390,46 +384,11 @@ export function createMesacodeStore(
       writeState: (updater) => set((state) => updater(state)),
     }),
 
-    newUserOnboardingOpen: false,
-    setNewUserOnboardingOpen: (open) => set({ newUserOnboardingOpen: open }),
-    onboardingDialogRequested: false,
-    requestOnboardingDialog: (entry) => set({ onboardingDialogRequested: entry ?? true }),
-    clearOnboardingDialogRequest: () => set({ onboardingDialogRequested: false }),
   }));
 
-  syncSystemThemeListener = (theme: Theme) => {
+  syncSystemThemeListener = (_theme: Theme) => {
     cleanupSystemThemeListener?.();
     cleanupSystemThemeListener = null;
-
-    if (theme !== "system" || typeof window === "undefined") {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleSystemThemeChange = () => {
-      if (useStore.getState().theme !== "system") {
-        return;
-      }
-
-      // system 模式需要持续订阅系统亮暗变化，不能只在切换到 system 的瞬间应用一次。
-      // 否则用户后续切系统主题时，DOM 上的 dark class 不会同步更新，看起来就像“跟随系统失效”。
-      applyTheme("system");
-    };
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", handleSystemThemeChange);
-      cleanupSystemThemeListener = () => {
-        mediaQuery.removeEventListener("change", handleSystemThemeChange);
-      };
-      return;
-    }
-
-    // 某些 Electron / Chromium 组合仍然只支持旧版 MediaQueryList listener API。
-    // 如果这里只调用 addEventListener，system 模式切系统主题时会完全收不到通知。
-    mediaQuery.addListener(handleSystemThemeChange);
-    cleanupSystemThemeListener = () => {
-      mediaQuery.removeListener(handleSystemThemeChange);
-    };
   };
 
   // Zustand v5 的 setState 在 replace=true/false 上使用了不同重载，

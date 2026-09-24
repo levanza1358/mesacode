@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button.js";
 import { EmbeddedWebsiteHeader } from "@/components/EmbeddedWebsiteHeader.js";
 import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { useMesacodeStoreWithDefault } from "@/store/StoreProvider.js";
-import { normalizeThemePreference, resolveTheme } from "@/useTheme.js";
+import { resolveTheme } from "@/useTheme.js";
 import type { CodingPlanProviderId } from "@/settings/model-provider-section/constants.js";
 import type { CodingPlanFunnelContext } from "@/lib/codingPlanFunnelTelemetry.js";
 import {
@@ -85,7 +85,7 @@ export function CodingPlanEmbeddedWebviewDialog({
 }: CodingPlanEmbeddedWebviewDialogProps) {
   const { intl, locale } = useMesacodeIntl();
   const platform = usePlatform();
-  const theme = useMesacodeStoreWithDefault((state) => state.theme, "zai-dark");
+  const theme = useMesacodeStoreWithDefault((state) => state.theme, "dark");
   const userId = useMesacodeStoreWithDefault((state) => state.user?.id ?? null, null);
   const webviewRef = useRef<ElectronWebviewTag | null>(null);
   const onOpenResultRef = useRef(onOpenResult);
@@ -116,10 +116,7 @@ export function CodingPlanEmbeddedWebviewDialog({
     isLoading: false,
   });
   const provider = resolveCodingPlanWebsiteProvider(providerId);
-  const embeddedTheme: CodingPlanEmbeddedTheme =
-    normalizeThemePreference(theme) === "zai-dark" || resolveTheme(theme) === "dark"
-      ? "zai-dark"
-      : "zai-light";
+  const embeddedTheme: CodingPlanEmbeddedTheme = resolveTheme(theme);
   const computedWebviewUrl = useMemo(() => {
     const env = readCodingPlanWebviewImportMetaEnv();
     const origin = resolveCodingPlanEmbeddedOrigin({

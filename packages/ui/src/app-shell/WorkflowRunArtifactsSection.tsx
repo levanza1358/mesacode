@@ -59,7 +59,7 @@ export const WorkflowRunArtifactsSection = memo(function WorkflowRunArtifactsSec
   const { intl } = useMesacodeIntl();
   const [expanded, setExpanded] = useState(true);
   // markdown 缩略要按 theme 选代码块配色；无 Provider 的宿主（单测）拿到 system。
-  const theme = useMesacodeStoreWithDefault((state) => state.theme, "system");
+  const theme = useMesacodeStoreWithDefault((state) => state.theme, "dark");
   const title = intl.formatMessage({ id: "chat.toolCall.workflow.run.artifacts.title" });
   // 稳定引用：四个渲染器都是 memo 的，labels 每帧换一个新对象会让那层比较永远命中不了。
   const labels = useMemo(

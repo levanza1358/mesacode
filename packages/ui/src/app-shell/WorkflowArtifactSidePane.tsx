@@ -46,7 +46,7 @@ const WorkflowArtifactContent = memo(function WorkflowArtifactContent({
   const { intl } = useMesacodeIntl();
   const { layer } = useV4Conversation();
   const [lease, setLease] = useState<SessionLease | null>(null);
-  const theme = useMesacodeStoreWithDefault((state) => state.theme, "system");
+  const theme = useMesacodeStoreWithDefault((state) => state.theme, "dark");
 
   // 订阅**父会话**的投影（照 PlanDetail / WorkflowRun 详情页）：产物的新鲜元数据是父会话
   // 投影的一部分，不是这个面板的本地缓存。

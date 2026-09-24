@@ -44,7 +44,7 @@ type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
   theme?: BundledTheme;
   /**
    * 应用主题（store 耦合剥离）：仅透传给 Mermaid 渲染分支；
-   * `theme` 已被 shiki 高亮主题占用，故另起名 appTheme。缺省时 Mermaid 按 "system" 兜底。
+  * `theme` 已被 shiki 高亮主题占用，故另起名 appTheme。缺省时 Mermaid 按 dark 兜底。
    */
   appTheme?: Theme;
   wrapLongLines?: boolean;

@@ -237,20 +237,14 @@ export const WorkspaceSidebarFooter = memo(function WorkspaceSidebarFooterCompon
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="w-48">
                 <DropdownMenuRadioGroup value={theme} onValueChange={onThemeChange}>
-                  <DropdownMenuRadioItem value="system">
-                    {intl.formatMessage({
-                      id: "sidebar.settings.systemDefault",
-                    })}
+                  <DropdownMenuRadioItem value="dark">
+                    {intl.formatMessage({ id: "sidebar.settings.theme.dark" })}
                   </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="zai-dark">
-                    {intl.formatMessage({
-                      id: "sidebar.settings.theme.zai-dark",
-                    })}
+                  <DropdownMenuRadioItem value="light">
+                    {intl.formatMessage({ id: "sidebar.settings.theme.light" })}
                   </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="zai-light">
-                    {intl.formatMessage({
-                      id: "sidebar.settings.theme.zai-light",
-                    })}
+                  <DropdownMenuRadioItem value="black">
+                    {intl.formatMessage({ id: "settings.themeMode.black" })}
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>

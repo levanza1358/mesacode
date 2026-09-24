@@ -1,27 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 
-export type Theme = "light" | "dark" | "zai-light" | "zai-dark" | "black" | "midnight" | "ocean" | "forest" | "purple" | "rose" | "amber" | "system";
+export type Theme = "light" | "dark" | "black";
 export type ResolvedTheme = "light" | "dark";
 
 const STORAGE_KEY = "mesacode-theme";
 const BROWSER_THEME_SURFACE_ATTRIBUTE = "data-mesacode-browser-theme-surface";
 
-function getSystemTheme(): ResolvedTheme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
 export function resolveTheme(theme: Theme): ResolvedTheme {
-  if (theme === "system") {
-    return getSystemTheme();
-  }
-
-  return ["dark", "zai-dark", "black", "midnight", "ocean", "forest", "purple", "rose", "amber"].includes(theme) ? "dark" : "light";
+  return theme === "light" ? "light" : "dark";
 }
 
 export function normalizeThemePreference(theme: Theme): Theme {
-  if (theme === "dark") return "zai-dark";
-  if (theme === "light") return "zai-light";
-  return theme;
+  return theme === "light" || theme === "black" ? theme : "dark";
 }
 
 function setThemeMetaContent(name: "theme-color" | "color-scheme", content: string) {
@@ -57,38 +47,22 @@ function syncBrowserThemeSurface(resolved: ResolvedTheme) {
 
 export function applyTheme(theme: Theme) {
   const resolved = resolveTheme(theme);
-  const appliedTheme =
-    theme === "system"
-      ? resolved === "dark"
-        ? "zai-dark"
-        : "zai-light"
-      : normalizeThemePreference(theme);
+  const appliedTheme = normalizeThemePreference(theme);
   document.documentElement.classList.toggle("dark", resolved === "dark");
-  document.documentElement.classList.toggle("theme-zai-light", appliedTheme === "zai-light");
-  document.documentElement.classList.toggle("theme-zai-dark", appliedTheme === "zai-dark");
-  for (const name of ["black", "midnight", "ocean", "forest", "purple", "rose", "amber"] as const) {
-    document.documentElement.classList.toggle(`theme-${name}`, appliedTheme === name);
-  }
+  document.documentElement.classList.toggle("theme-light", appliedTheme === "light");
+  document.documentElement.classList.toggle("theme-dark", appliedTheme === "dark");
+  document.documentElement.classList.toggle("theme-black", appliedTheme === "black");
   syncBrowserThemeSurface(resolved);
 }
 
 function isTheme(value: string | null): value is Theme {
-  return (
-    value === "light" ||
-    value === "dark" ||
-    value === "zai-light" ||
-    value === "zai-dark" ||
-    value === "black" || value === "midnight" || value === "ocean" || value === "forest" ||
-    value === "purple" || value === "rose" || value === "amber" ||
-    value === "system"
-  );
+  return value === "light" || value === "dark" || value === "black";
 }
 
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    // 默认主题统一收敛到 Zai dark，避免旧 hook 兜底值和 Zustand store 默认值分叉。
-    return isTheme(saved) ? normalizeThemePreference(saved) : "zai-dark";
+    return isTheme(saved) ? normalizeThemePreference(saved) : "dark";
   });
 
   const setTheme = useCallback((t: Theme) => {
@@ -98,16 +72,9 @@ export function useTheme() {
     applyTheme(normalizedTheme);
   }, []);
 
-  // 初始化 + system 模式下监听系统偏好变化
+  // Initialize the selected theme.
   useEffect(() => {
     applyTheme(theme);
-
-    if (theme !== "system") return;
-
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => applyTheme("system");
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
   }, [theme]);
 
   return { theme, setTheme } as const;

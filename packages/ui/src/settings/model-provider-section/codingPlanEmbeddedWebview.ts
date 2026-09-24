@@ -37,7 +37,7 @@ interface CodingPlanEmbeddedReportContext {
   app_version?: string;
 }
 
-export type CodingPlanEmbeddedTheme = "zai-light" | "zai-dark";
+export type CodingPlanEmbeddedTheme = "light" | "dark";
 
 /**
  * App locale（zh-CN / en-US）→ 官网 URL lang 段（cn / en）。
@@ -204,9 +204,9 @@ export function createCodingPlanAuthInjectionScript({
   return `(() => {
   ${storageUpdates}
   const mesacodeTheme = ${JSON.stringify(theme)};
-  document.documentElement.classList.toggle("dark", mesacodeTheme === "zai-dark");
-  document.documentElement.classList.toggle("theme-zai-light", mesacodeTheme === "zai-light");
-  document.documentElement.classList.toggle("theme-zai-dark", mesacodeTheme === "zai-dark");
+  document.documentElement.classList.toggle("dark", mesacodeTheme === "dark");
+  document.documentElement.classList.toggle("theme-light", mesacodeTheme === "light");
+  document.documentElement.classList.toggle("theme-dark", mesacodeTheme === "dark");
   localStorage.setItem("mesacode-theme", mesacodeTheme);
   localStorage.setItem("mesacode:coding-plan:embedded", "app");
   // 写入当前 App locale，供官网 mesacodeBridge.getLang() 读取。

@@ -106,7 +106,7 @@ function ToolCallBlockComponent({
   toolCallNode: TaskChatToolCallTreeNode;
   depth?: number;
   workspacePath: string;
-  /** 应用主题（store 耦合剥离）：由宿主（v4 SessionPane 等）传入，缺省按 "system" 兜底。 */
+  /** 应用主题（store 耦合剥离）：由宿主传入，缺省按 dark 兜底。 */
   theme?: ToolCallBlockRenderContext["theme"];
   /** 代码预览设置（store 耦合剥离）：由宿主传入并保持引用稳定。 */
   codePreviewSettings?: ToolCallBlockRenderContext["codePreviewSettings"];

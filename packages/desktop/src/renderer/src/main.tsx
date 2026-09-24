@@ -73,30 +73,14 @@ function registerE2EStoreBridgesIfEnabled() {
   });
 }
 
-// 初始化主题：默认 Zai dark，后续由 useTheme hook 接管
+// Initialize the theme; useTheme owns subsequent updates.
 {
-  const saved = localStorage.getItem("mesacode-theme") || "zai-dark";
-  const resolved =
-    saved === "system"
-      ? window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light"
-      : saved === "dark" || saved === "zai-dark"
-        ? "dark"
-        : "light";
-  const appliedTheme =
-    saved === "system"
-      ? resolved === "dark"
-        ? "zai-dark"
-        : "zai-light"
-      : saved === "dark"
-        ? "zai-dark"
-        : saved === "light"
-          ? "zai-light"
-          : saved;
+  const saved = localStorage.getItem("mesacode-theme") || "dark";
+  const resolved = saved === "light" ? "light" : "dark";
   if (resolved === "dark") document.documentElement.classList.add("dark");
-  document.documentElement.classList.toggle("theme-zai-light", appliedTheme === "zai-light");
-  document.documentElement.classList.toggle("theme-zai-dark", appliedTheme === "zai-dark");
+  document.documentElement.classList.toggle("theme-light", saved === "light");
+  document.documentElement.classList.toggle("theme-dark", saved === "dark");
+  document.documentElement.classList.toggle("theme-black", saved === "black");
 }
 
 const isMacDesktop = navigator.userAgent.includes("Mac");

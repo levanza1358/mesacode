@@ -458,7 +458,8 @@ body {
   --color-plugin-paid-plan-badge-foreground: #ffd8b8;
 }
 
-.theme-zai-light {
+/* Light theme */
+.theme-light {
   --animated-gradient-text-strong: rgba(13, 13, 13, 1);
   --animated-gradient-text-soft: rgba(13, 13, 13, 0.22);
   --color-background: #f8f8f8;
@@ -603,7 +604,8 @@ body {
   --color-plugin-paid-plan-badge-foreground: #4b280f;
 }
 
-.theme-zai-dark {
+/* Dark theme */
+.theme-dark {
   --animated-gradient-text-strong: rgba(255, 255, 255, 1);
   --animated-gradient-text-soft: rgba(255, 255, 255, 0.22);
   --color-background: #161616;
@@ -750,13 +752,6 @@ body {
 }
 
 .theme-black { --color-background: #000; --color-background-alt: #090909; --color-header: #050505; --color-panel: #050505; --color-sidebar: #000; --color-card: #111; --color-popover: #111; --color-input: #111; --color-brand: #fff; --color-accent: #202020; --color-primary: #fff; --color-primary-foreground: #000; }
-.theme-midnight { --color-brand: #818cf8; --color-accent: #1e1b4b; --color-primary: #818cf8; --color-primary-foreground: #0f172a; }
-.theme-ocean { --color-brand: #22d3ee; --color-accent: #083344; --color-primary: #06b6d4; --color-primary-foreground: #082f49; }
-.theme-forest { --color-brand: #4ade80; --color-accent: #052e16; --color-primary: #22c55e; --color-primary-foreground: #052e16; }
-.theme-purple { --color-brand: #c084fc; --color-accent: #2e1065; --color-primary: #a855f7; --color-primary-foreground: #2e1065; }
-.theme-rose { --color-brand: #fb7185; --color-accent: #4c0519; --color-primary: #f43f5e; --color-primary-foreground: #4c0519; }
-.theme-amber { --color-brand: #fbbf24; --color-accent: #451a03; --color-primary: #f59e0b; --color-primary-foreground: #451a03; }
-
 /*
  * Previously only the task list customized its scrollbar; other panels, dropdown lists, and code areas kept the system default,
  * so thickness, corner radius, and track background were inconsistent within one interface. Here this transparent track + rounded thumb

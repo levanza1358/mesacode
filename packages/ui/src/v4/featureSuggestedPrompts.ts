@@ -1,7 +1,7 @@
 /* eslint-disable max-lines -- 推荐语料按表格逐条维护，集中放置便于对照审核。 */
-import finderIcon from "@/onboarding/assets/finder.png";
-import terminalIcon from "@/onboarding/assets/terminal.png";
-import feishuIcon from "@/onboarding/assets/feishu.png";
+const finderIcon = "https://cdn-mesacode.z.ai/mesacode/official-plugin/assets/finder.png";
+const terminalIcon = "https://cdn-mesacode.z.ai/mesacode/official-plugin/assets/terminal.png";
+const feishuIcon = "https://cdn-mesacode.z.ai/mesacode/official-plugin/assets/feishu.png";
 import documentsIcon from "@/assets/plugin-icons/documents.png";
 import pdfIcon from "@/assets/plugin-icons/pdf.png";
 import presentationsIcon from "@/assets/plugin-icons/presentations.png";

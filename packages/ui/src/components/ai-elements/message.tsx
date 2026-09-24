@@ -371,7 +371,7 @@ export type MessageResponseProps = {
   }) => Promise<{ bytes: Uint8Array; mediaType: string } | { url: string; mediaType: string }>;
   /**
    * 应用主题（store 耦合剥离）：决定代码块高亮取 light/dark 主题。
-   * 由调用方从上层状态传入；默认 "system" 跟随操作系统，供待删旧调用点兜底。
+  * 由调用方从上层状态传入；默认 dark 与应用默认主题一致。
    */
   theme?: Theme;
   /**
@@ -843,13 +843,7 @@ function resolveMessageCodeTheme(
   theme: Theme,
   codePreviewSettings: { lightTheme: BundledTheme; darkTheme: BundledTheme },
 ): BundledTheme {
-  if (theme === "system" && typeof window !== "undefined") {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? codePreviewSettings.darkTheme
-      : codePreviewSettings.lightTheme;
-  }
-
-  return theme === "dark" || theme === "zai-dark"
+  return theme === "dark" || theme === "black"
     ? codePreviewSettings.darkTheme
     : codePreviewSettings.lightTheme;
 }
@@ -1326,7 +1320,7 @@ export const MessageResponse = memo(
     workspaceRemoteSessionId,
     sessionId,
     readAttachment,
-    theme = "system",
+    theme = "dark",
     codePreviewSettings = DEFAULT_CODE_PREVIEW_SETTINGS,
     children,
   }: MessageResponseProps) => {

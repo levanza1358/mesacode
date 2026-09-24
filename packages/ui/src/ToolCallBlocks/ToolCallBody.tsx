@@ -32,7 +32,7 @@ export function ToolCallBody({
   inlinePreviewOverride?: ToolInlinePreview;
   toolCall: TaskChatToolCallTreeNode["toolCall"];
   workspacePath: string;
-  /** 应用主题（store 耦合剥离）：透传给 markdown / 代码块渲染，缺省按 "system" 兜底。 */
+  /** 应用主题（store 耦合剥离）：透传给 markdown / 代码块渲染，缺省按 dark 兜底。 */
   theme?: Theme;
   /** 代码预览设置（store 耦合剥离）：透传给 markdown 渲染，需保持引用稳定。 */
   codePreviewSettings?: CodePreviewSettings;

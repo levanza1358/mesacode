@@ -26,7 +26,7 @@ export interface MermaidBlockProps extends HTMLAttributes<HTMLDivElement> {
   code: string;
   /**
    * 应用主题（store 耦合剥离）：由调用方从上层状态传入。
-   * 默认 "system" 跟随操作系统，供旧调用点/待删代码兜底。
+  * 默认 dark，保持渲染器在无上层状态时与应用默认主题一致。
    */
   theme?: Theme;
   onOpenPreview?: () => void;
@@ -191,33 +191,10 @@ function createMermaidConfig(resolvedTheme: "light" | "dark"): MermaidConfig {
 
 function resolveBrowserTheme(theme: Theme): "light" | "dark" {
   if (typeof window === "undefined") {
-    return theme === "dark" || theme === "zai-dark" ? "dark" : "light";
+    return theme === "dark" || theme === "black" ? "dark" : "light";
   }
 
   return resolveTheme(theme);
-}
-
-function useSystemThemeRevision(theme: Theme): number {
-  const [revision, setRevision] = useState(0);
-
-  useEffect(() => {
-    if (theme !== "system" || typeof window === "undefined") {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => setRevision((current) => current + 1);
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    }
-
-    mediaQuery.addListener(handleChange);
-    return () => mediaQuery.removeListener(handleChange);
-  }, [theme]);
-
-  return revision;
 }
 
 function normalizeMermaidRenderError(error: unknown): string {
@@ -227,17 +204,16 @@ function normalizeMermaidRenderError(error: unknown): string {
 export function MermaidBlock({
   code,
   className,
-  theme = "system",
+  theme = "dark",
   onOpenPreview,
   onPreviewSvgChange,
   ...props
 }: MermaidBlockProps) {
   const { intl } = useMesacodeIntl();
-  const systemThemeRevision = useSystemThemeRevision(theme);
   const renderIdPrefix = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const trimmedCode = code.trim();
   const resolvedTheme = resolveBrowserTheme(theme);
-  const themeKey = `${theme}:${resolvedTheme}:${systemThemeRevision}`;
+  const themeKey = `${theme}:${resolvedTheme}`;
   const mermaidConfig = useMemo(
     () => createMermaidConfig(resolvedTheme),
     [resolvedTheme, themeKey],

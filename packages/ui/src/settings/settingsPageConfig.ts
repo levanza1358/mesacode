@@ -1,6 +1,6 @@
 import {
-  Monitor,
   Moon,
+  Monitor,
   Settings,
   Settings2,
   Package,
@@ -9,16 +9,16 @@ import {
   Sun,
   BarChart3,
   Terminal,
-  AlarmClock,
-  Anchor,
   Brain,
   Blocks,
-  Globe2,
   Cable,
-  WandSparkles,
   Keyboard,
   FileSearch,
+  AlarmClock,
+  Anchor,
+  Globe2,
   Heart,
+  WandSparkles,
 } from "lucide-react";
 import { isSettingsSectionEnabled, type SettingsSectionId } from "@/lib/settingsNavigation.js";
 import type { Theme } from "@/useTheme.js";
@@ -27,16 +27,9 @@ export const THEME_MODES: Array<{
   mode: Theme;
   icon: typeof Sun;
 }> = [
-  { mode: "system", icon: Monitor },
-  { mode: "zai-dark", icon: Moon },
-  { mode: "zai-light", icon: Sun },
+  { mode: "dark", icon: Moon },
+  { mode: "light", icon: Sun },
   { mode: "black", icon: Moon },
-  { mode: "midnight", icon: Moon },
-  { mode: "ocean", icon: Globe2 },
-  { mode: "forest", icon: Anchor },
-  { mode: "purple", icon: WandSparkles },
-  { mode: "rose", icon: Heart },
-  { mode: "amber", icon: AlarmClock },
 ];
 
 type SettingsSectionGroupId = "basics" | "agentCapabilities" | "dataAndStats";

@@ -1375,7 +1375,7 @@ export function SessionPane({
 
   // 注入模式对齐 PermissionDialog：theme/codePreviewSettings 在宿主取 store，
   // 经稳定引用的 rowContext 下发给 memo 行组件（MessageResponse/ToolCallBlocks）。
-  const theme = useMesacodeStoreWithDefault((state) => state.theme, "system");
+  const theme = useMesacodeStoreWithDefault((state) => state.theme, "dark");
   const codePreviewSettings = useMesacodeStoreWithDefault(
     (state) => state.codePreviewSettings,
     DEFAULT_CODE_PREVIEW_SETTINGS,

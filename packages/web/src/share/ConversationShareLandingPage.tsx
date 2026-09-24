@@ -202,7 +202,7 @@ function ShareThemeToggle({
   onThemeChange?: (theme: Theme) => void;
 }) {
   const resolvedTheme = resolveTheme(theme);
-  const nextTheme = resolvedTheme === "dark" ? "zai-light" : "zai-dark";
+  const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
   const label = resolvedTheme === "dark" ? copy.switchToLightTheme : copy.switchToDarkTheme;
   const Icon = resolvedTheme === "dark" ? SunIcon : MoonIcon;
 
@@ -272,7 +272,7 @@ export function ConversationShareLandingPage({
 }) {
   const resolvedLocale = localeOf(locale);
   const copy = COPY[resolvedLocale];
-  const activeTheme = theme ?? "zai-light";
+  const activeTheme = theme ?? "light";
   // preview 到手后把会话标题写进浏览器标签；main.tsx 只能先给一个语言正确的兜底标题。
   const shareTitle = preview.share.title;
   useEffect(() => {
@@ -707,19 +707,12 @@ export function ConversationShareLandingLoader({
   theme?: Theme;
 }) {
   const [state, setState] = useState<ConversationShareLandingState>({ kind: "loading" });
-  const [activeTheme, setActiveTheme] = useState<Theme>(theme ?? "zai-light");
+  const [activeTheme, setActiveTheme] = useState<Theme>(theme ?? "light");
   const handleThemeChange = useCallback((nextTheme: Theme) => {
     localStorage.setItem("mesacode-theme", nextTheme);
     setActiveTheme(nextTheme);
     applyTheme(nextTheme);
   }, []);
-  useEffect(() => {
-    if (activeTheme !== "system") return;
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleSystemThemeChange = () => applyTheme("system");
-    mediaQuery.addEventListener("change", handleSystemThemeChange);
-    return () => mediaQuery.removeEventListener("change", handleSystemThemeChange);
-  }, [activeTheme]);
   const load = useCallback(async () => {
     setState({ kind: "loading" });
     // 有登录态就第一次直接带上：private 分享匿名请求必然被服务端按存在性隐匿判 404，
