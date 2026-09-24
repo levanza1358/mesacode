@@ -203,7 +203,7 @@ function resolveElectronDownloadMirror(env = process.env) {
 }
 
 const commandStdoutMaxBuffer = 64 * 1024 * 1024;
-// 产物后缀只标记后端环境（_TEST）；身份靠 productName 区分，生产后端的 Preview 包没有后缀。
+// Installer artifacts keep the Mesa Code product name without environment labels.
 const desktopArtifactEnvSuffix = resolveDesktopArtifactSuffix(process.env);
 
 // Preview 是内部签名测试包。CI 明确打开 macOS 签名时若没有身份，必须在生成未签名包前失败，
@@ -234,7 +234,6 @@ const PACKAGING_PRUNE_PATTERNS = [
 ];
 
 function buildDesktopArtifactName(platformName, extension = "${ext}") {
-  // 测试环境产物必须和正式安装包文件名区分，避免上传、下载或人工验收时混用。
   return `\${productName}-\${version}-${platformName}-\${arch}${desktopArtifactEnvSuffix}.${extension}`;
 }
 

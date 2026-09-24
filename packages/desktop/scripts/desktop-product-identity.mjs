@@ -73,11 +73,12 @@ export function resolveDesktopProductIdentity(env = process.env) {
 }
 
 /**
- * 产物文件名后缀标记的是后端环境而不是身份：`_TEST` 只出现在测试后端的安装包上。
- * 生产后端的 Preview 包靠 productName（`Mesacode Preview-<version>-...`）与正式包区分。
+ * Installer artifact names use the product identity only. Test builds may still be
+ * separated by their configured output directory or CI metadata, not by user-visible
+ * names such as `Preview` or `_TEST`.
  */
 export function resolveDesktopArtifactSuffix(env = process.env) {
-  return normalizeDesktopMesacodeEnv(env) === "test" ? "_TEST" : "";
+  return "";
 }
 
 /**

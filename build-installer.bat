@@ -2,6 +2,8 @@
 setlocal
 cd /d "%~dp0"
 
+set "MESACODE_ENV=production"
+set "MESACODE_PREVIEW_IDENTITY=0"
 set "MESACODE_SKIP_REMOTE_ASSETS=1"
 set "MESACODE_SKIP_BUILD=0"
 
