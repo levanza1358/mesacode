@@ -4,21 +4,21 @@ import {
   AUTOMATION_CREATE_LIMIT,
   AUTOMATION_CREATE_LIMIT_ERROR_CODE,
   isAutomationCreateLimitError,
-  type ZCodeAutomation,
-  type ZCodeAutomationRun,
-  type ZCodeAutomationScheduleRule,
+  type MesacodeAutomation,
+  type MesacodeAutomationRun,
+  type MesacodeAutomationScheduleRule,
   type ModelSelection,
-} from "@zcode/shared";
-import type { IZCodeAgentService } from "@zcode/services";
+} from "@mesacode/shared";
+import type { IMesacodeAgentService } from "@mesacode/services";
 import { logger } from "@/logger.js";
 
-// 定时任务(automation)管理 store：走 zcode-agent RPC（列表 / 创建 / 编辑 / 启停 / 重跑 / 删除 + 运行历史）。
+// 定时任务(automation)管理 store：走 mesacode-agent RPC（列表 / 创建 / 编辑 / 启停 / 重跑 / 删除 + 运行历史）。
 // 与 pluginManagementStore 同一范式：按 workspace 缓存，切换时后台刷新避免闪烁。
 
 /** 单条 automation 的运行历史缓存（按 automationId 记 loading/data/error）。 */
 export interface AutomationRunsEntry {
   status: "loading" | "loaded" | "error";
-  runs?: ZCodeAutomationRun[];
+  runs?: MesacodeAutomationRun[];
   error?: string;
 }
 
@@ -33,7 +33,7 @@ export interface CreateAutomationInput {
   recurring?: boolean;
   maxRuns?: number;
   endAt?: number;
-  scheduleRule?: ZCodeAutomationScheduleRule;
+  scheduleRule?: MesacodeAutomationScheduleRule;
   // 目标项目;缺省用 store 当前列表所在项目。创建整页可在项目下拉里改。
   workspacePath?: string;
   workspaceIdentity?: string;
@@ -48,14 +48,14 @@ export interface UpdateAutomationInput {
   recurring?: boolean;
   maxRuns?: number | null;
   endAt?: number | null;
-  scheduleRule?: ZCodeAutomationScheduleRule | null;
+  scheduleRule?: MesacodeAutomationScheduleRule | null;
   scheduleEditedByUser?: boolean;
 }
 
 interface AutomationManagementState {
   workspacePath: string | null;
   workspaceIdentity: string | null;
-  automations: ZCodeAutomation[];
+  automations: MesacodeAutomation[];
   loading: boolean;
   error: string | null;
   // 正在进行的写操作标记，用于禁用对应按钮（如 `automation:delete:<id>`）。
@@ -64,39 +64,39 @@ interface AutomationManagementState {
   initialize: (params: {
     workspacePath: string;
     workspaceIdentity?: string;
-    agentService: IZCodeAgentService;
+    agentService: IMesacodeAgentService;
   }) => Promise<void>;
-  refresh: (agentService: IZCodeAgentService) => Promise<void>;
+  refresh: (agentService: IMesacodeAgentService) => Promise<void>;
   createAutomation: (
     input: CreateAutomationInput,
-    agentService: IZCodeAgentService,
-  ) => Promise<ZCodeAutomation | null>;
+    agentService: IMesacodeAgentService,
+  ) => Promise<MesacodeAutomation | null>;
   updateAutomation: (
     automationId: string,
     input: UpdateAutomationInput,
-    agentService: IZCodeAgentService,
+    agentService: IMesacodeAgentService,
   ) => Promise<boolean>;
-  deleteAutomation: (automationId: string, agentService: IZCodeAgentService) => Promise<void>;
+  deleteAutomation: (automationId: string, agentService: IMesacodeAgentService) => Promise<void>;
   setEnabled: (
     automationId: string,
     enabled: boolean,
-    agentService: IZCodeAgentService,
+    agentService: IMesacodeAgentService,
   ) => Promise<void>;
-  restartAutomation: (automationId: string, agentService: IZCodeAgentService) => Promise<void>;
+  restartAutomation: (automationId: string, agentService: IMesacodeAgentService) => Promise<void>;
   /** 立即运行一次；queued / duplicate / failed 均由调用方 toast。 */
   runAutomationNow: (
     automationId: string,
-    agentService: IZCodeAgentService,
+    agentService: IMesacodeAgentService,
   ) => Promise<AutomationRunNowResult>;
   loadRuns: (
     automationId: string,
-    agentService: IZCodeAgentService,
+    agentService: IMesacodeAgentService,
     force?: boolean,
   ) => Promise<void>;
   deleteRun: (
     automationId: string,
     runId: string,
-    agentService: IZCodeAgentService,
+    agentService: IMesacodeAgentService,
   ) => Promise<void>;
 }
 
@@ -134,7 +134,7 @@ async function loadInto(
   params: {
     workspacePath: string;
     workspaceIdentity: string | null;
-    agentService: IZCodeAgentService;
+    agentService: IMesacodeAgentService;
     requestId: number;
   },
 ): Promise<void> {

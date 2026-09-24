@@ -6,7 +6,7 @@ Implemented
 
 ## Tujuan
 
-Mengubah identitas produk yang terlihat pengguna dari ZCode menjadi Mesa Code tanpa memutus kompatibilitas internal workspace, plugin, sesi, protocol, dan runtime Agent.
+Mengubah identitas produk yang terlihat pengguna dari Mesacode menjadi Mesa Code tanpa memutus kompatibilitas internal workspace, plugin, sesi, protocol, dan runtime Agent.
 
 ## Ruang Lingkup
 
@@ -17,16 +17,17 @@ Mengubah identitas produk yang terlihat pengguna dari ZCode menjadi Mesa Code ta
 - Dokumentasi user-facing utama menggunakan Mesa Code.
 - All app, tray, installer, uninstaller, Linux, and macOS icon sources use canonical assets from `public/logo/icons/`.
 
-## Di Luar Ruang Lingkup
+## Legacy Boundary
 
-Identifier internal berikut tetap menggunakan ZCode untuk menjaga kompatibilitas:
+Identifier internal berikut are legacy names scheduled for removal. They are not valid names for
+new Mesa Code code, configuration, protocol, or storage:
 
-- Package scope `@zcode/*`.
-- Environment variable `ZCODE_*`.
-- Protocol scheme `zcode://`.
-- Storage directory `.zcode`.
-- Nama simbol TypeScript dan kontrak RPC internal.
-- Nama Agent CLI internal dan format data sesi.
+- Package scope `@mesacode/*`.
+- Environment variable `MESACODE_*`.
+- Protocol scheme `mesacode://`.
+- Storage directory `.mesacode`.
+- TypeScript symbols and internal RPC contracts.
+- Internal Agent CLI names and session data formats.
 
 ## Kepemilikan dan Batas
 
@@ -39,8 +40,8 @@ Identifier internal berikut tetap menggunakan ZCode untuk menjaga kompatibilitas
 
 1. Build desktop tetap menghasilkan Windows installer NSIS.
 2. Executable utama pada package Windows bernama `MesaCode.exe`.
-3. Aplikasi lama dan aplikasi Mesa Code tidak boleh saling menghapus data sesi karena storage internal tetap `.zcode`.
-4. Protocol `zcode://`, environment variable, dan package import tidak berubah.
+3. Mesa Code writes only to `.mesacode`.
+4. Legacy `.mesacode` data is not silently read or merged.
 5. Build tidak boleh menambah pelanggaran arsitektur baru.
 6. Packaging does not use stale generated icon assets when canonical assets exist.
 
@@ -61,7 +62,7 @@ Mesa Code must open the workspace without requiring account login or OAuth when 
 1. Startup must not set `welcomeScreenOpenReason` to `startup-provider-required` solely because the user is anonymous or no provider is configured.
 2. Workspace fallback creation and session restoration must not wait for a login screen.
 3. Explicit login/provider requests and session-expired recovery continue to open the existing login surface.
-4. No internal storage keys, protocol identifiers, or provider configuration formats change.
+4. No legacy storage, protocol, or environment fallback is used by Mesa Code.
 
 ### Acceptance Scenarios
 
@@ -77,7 +78,7 @@ Mesa Code uses English for all user-facing application UI, onboarding, menus, se
 
 ### State Ownership
 
-- `ZCodeIntlProvider` owns the effective UI locale and resolves it to `en-US`.
+- `MesacodeIntlProvider` owns the effective UI locale and resolves it to `en-US`.
 - Existing locale values and persisted settings remain accepted only as compatibility data; they must not change the rendered UI language.
 - Documentation is maintained in English. Dependency-owned documentation and third-party notices are outside this migration boundary.
 

@@ -5,11 +5,11 @@ import { join } from "node:path";
 import {
   DEFAULT_LOCALE,
   type Locale,
-  ZCODE_BUILD_TIME,
-  ZCODE_COMMIT,
-  ZCODE_ENV,
-  ZCODE_VERSION,
-} from "@zcode/shared";
+  MESACODE_BUILD_TIME,
+  MESACODE_COMMIT,
+  MESACODE_ENV,
+  MESACODE_VERSION,
+} from "@mesacode/shared";
 import { createCustomAboutDialogHtml } from "./aboutWindow.js";
 
 interface DesktopBuildMetadata {
@@ -150,10 +150,10 @@ export function createAboutSnapshot(options: AboutSnapshotOptions = {}): AboutSn
   };
 
   return {
-    appVersion: normalizeValue(options.appVersion ?? buildMetadata?.appVersion ?? ZCODE_VERSION),
-    buildCommitId: normalizeValue(buildMetadata?.buildCommitId ?? ZCODE_COMMIT),
-    buildTime: normalizeValue(buildMetadata?.buildTime ?? ZCODE_BUILD_TIME),
-    environment: normalizeValue(options.environment ?? ZCODE_ENV),
+    appVersion: normalizeValue(options.appVersion ?? buildMetadata?.appVersion ?? MESACODE_VERSION),
+    buildCommitId: normalizeValue(buildMetadata?.buildCommitId ?? MESACODE_COMMIT),
+    buildTime: normalizeValue(buildMetadata?.buildTime ?? MESACODE_BUILD_TIME),
+    environment: normalizeValue(options.environment ?? MESACODE_ENV),
     electronVersion: normalizeValue(runtimeVersions.electron),
     electronBuilderVersion: resolveElectronBuilderVersion(buildMetadata),
     chromiumVersion: normalizeValue(runtimeVersions.chrome),

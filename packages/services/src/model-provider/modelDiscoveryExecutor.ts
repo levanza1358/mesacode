@@ -1,4 +1,4 @@
-import type { ApiClient, ApiRequestInit } from "@zcode/shared";
+import type { ApiClient, ApiRequestInit } from "@mesacode/shared";
 import { readApiJson } from "../providers/api/apiJson.js";
 import { normalizeApiKeyForHeader } from "../providers/api/apiKeyHeaders.js";
 import { createServiceLogger } from "../logger/serviceLogger.js";

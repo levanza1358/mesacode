@@ -5,10 +5,10 @@ import {
   TID_MODEL_PROVIDER_TEMPLATE_ITEM,
   TID_MODEL_PROVIDER_TEMPLATE_PICKER,
   testId,
-} from "@zcode/shared";
+} from "@mesacode/shared";
 import { Button } from "@/components/ui/button.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { logger } from "@/logger.js";
 import { useProviderDetailFeedback } from "./ProviderDetailFeedback.js";
 
@@ -23,7 +23,7 @@ export function ProviderTemplatePicker({
   onCreateCustom: CustomProviderCreate;
   creating: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const { dismissFeedback, showFeedback } = useProviderDetailFeedback();
   const customLabel = intl.formatMessage({ id: "settings.modelProvider.newProviderName" });
   const createWithFeedback = async (create: () => Promise<void>) => {
@@ -110,7 +110,7 @@ function ProviderTemplateCard({
         className="flex min-h-16 min-w-0 items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 text-left transition-colors outline-none hover:border-border-hover hover:bg-hover focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/20 disabled:opacity-60"
       >
         {icon}
-        <span className="min-w-0 flex-1 break-words text-ui-base font-medium">{label}</span>
+        <span className="min-w-0 flex-1 wrap-break-word text-ui-base font-medium">{label}</span>
         <ChevronRightIcon className="size-4 shrink-0 text-foreground-subtlest" aria-hidden="true" />
       </button>
     </ControlHintTooltip>

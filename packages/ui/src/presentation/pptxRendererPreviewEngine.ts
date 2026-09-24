@@ -7,6 +7,7 @@ import {
   renderSlide,
 } from "@aiden0z/pptx-renderer/browser";
 import type { SlideHandle } from "@aiden0z/pptx-renderer";
+import type { PresentationData } from "@aiden0z/pptx-renderer";
 import type {
   PresentationPreviewDocument,
   PresentationPreviewEngine,
@@ -18,35 +19,6 @@ import { buildPresentationPageElements } from "@/presentation/presentationElemen
 
 interface TextBodyLike {
   paragraphs: Array<{ runs: Array<{ text: string }> }>;
-}
-
-interface SlideNodeLike {
-  id: string;
-  name: string;
-  nodeType: "shape" | "picture" | "table" | "group" | "chart" | "unknown";
-  position: { x: number; y: number };
-  size: { w: number; h: number };
-  textBody?: TextBodyLike;
-  columns?: number[];
-  rows?: Array<{
-    height: number;
-    cells: Array<{
-      gridSpan: number;
-      rowSpan: number;
-      hMerge: boolean;
-      vMerge: boolean;
-      textBody?: TextBodyLike;
-    }>;
-  }>;
-}
-
-interface PresentationLike {
-  width: number;
-  height: number;
-  slides: Array<{
-    slidePath: string;
-    nodes: SlideNodeLike[];
-  }>;
 }
 
 interface TextIndexEntryLike {
@@ -73,7 +45,7 @@ class PptxRendererPreviewDocument implements PresentationPreviewDocument {
   private readonly elementCache = new Map<number, readonly PresentationPageElement[]>();
   private disposed = false;
 
-  constructor(private readonly presentation: PresentationLike) {
+  constructor(private readonly presentation: PresentationData) {
     this.pageCount = presentation.slides.length;
     this.pageSize = {
       width: presentation.width,
@@ -96,7 +68,7 @@ class PptxRendererPreviewDocument implements PresentationPreviewDocument {
     materializeSlideNodes(this.presentation, slide);
     // 只为当前页建立 group 文本索引，避免显式选择一页时提前 materialize 整份演示文稿。
     const groupTextIndex = buildTextIndex(
-      { ...this.presentation, slides: [slide] },
+      this.presentation,
       {
         includeGroups: true,
         includeShapes: true,

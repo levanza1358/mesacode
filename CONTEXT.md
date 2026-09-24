@@ -7,7 +7,7 @@ A domain vocabulary for the plugin settings page and its marketplace browse/inst
 ### Marketplace and sources
 
 **Official Marketplace**:
-The single distribution channel operated by Mesa Code, with marketplace id `zcode-plugins-official`; content = builtin plugins + CDN plugins. It is a "distribution channel", not "author attribution" — it can also include plugins from community authors.
+The single distribution channel operated by Mesa Code, with marketplace id `mesacode-plugins-official`; content = builtin plugins + CDN plugins. It is a "distribution channel", not "author attribution" — it can also include plugins from community authors.
 _Avoid_: using "official" to mean any trusted marketplace
 
 **Builtin Plugin**:

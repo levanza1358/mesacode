@@ -1,12 +1,12 @@
 import {
-  DEFAULT_ZCODE_ENDPOINT_ORIGIN,
-  ZCODE_VERSION,
+  DEFAULT_MESACODE_ENDPOINT_ORIGIN,
+  MESACODE_VERSION,
   buildHelpAppConfigUrl,
   createHelpAppConfigReader,
   resolveHelpAppConfig,
   type Locale,
-} from "@zcode/shared";
-import localDefaultAppConfig from "../../../config/default.json" with { type: "json" };
+} from "@mesacode/shared";
+import localDefaultAppConfig from "../../../config/default.json";
 
 interface ResolveWebCommunityUrlOptions {
   fetchImpl?: typeof fetch;
@@ -22,11 +22,11 @@ export async function resolveWebHelpConfig(options: ResolveWebCommunityUrlOption
   const env = import.meta.env;
   const endpoint =
     options.endpointOrigin ??
-    (env?.VITE_ZCODE_BASE_URL?.trim() ||
-      env?.VITE_ZCODE_ENDPOINT_ORIGIN?.trim() ||
-      DEFAULT_ZCODE_ENDPOINT_ORIGIN);
+    (env?.VITE_MESACODE_BASE_URL?.trim() ||
+      env?.VITE_MESACODE_ENDPOINT_ORIGIN?.trim() ||
+      DEFAULT_MESACODE_ENDPOINT_ORIGIN);
   // 服务端拒绝 platform=web；浏览器省略可选平台参数，避免伪装桌面系统。
-  const url = buildHelpAppConfigUrl(endpoint, ZCODE_VERSION);
+  const url = buildHelpAppConfigUrl(endpoint, MESACODE_VERSION);
   let remote: unknown;
   try {
     remote = await (

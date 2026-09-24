@@ -1,9 +1,9 @@
 /* eslint-disable max-lines -- Model Provider 导航需要集中计算分组、选中项与 Coding Plan 权益态，后续拆分时再收敛。 */
 import { useEffect, useMemo } from "react";
-import type { ProviderFamilyConnectionSelection, ProviderFamilyDomain } from "@zcode/shared";
+import type { ProviderFamilyConnectionSelection, ProviderFamilyDomain } from "@mesacode/shared";
 import type { ProviderSettingsFormProvider } from "@/lib/providerSettingsFormTypes.js";
 import { getProviderFormLabel } from "@/lib/providerSettingsFormTypes.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import type { ModelProviderNavGroup } from "@/settings/model-provider-section/constants.js";
 import { createCustomProviderNodeKey } from "@/settings/model-provider-section/utils.js";
 import {
@@ -17,7 +17,7 @@ interface UseModelProviderNavigationOptions {
   displayOrder?: ProviderOrderView;
   selectedNodeKey: string | null;
   setSelectedNodeKey: (key: string | null) => void;
-  intl: ReturnType<typeof useZCodeIntl>["intl"];
+  intl: ReturnType<typeof useMesacodeIntl>["intl"];
 }
 
 export function connectionSelectionMatchesNavigationItem(

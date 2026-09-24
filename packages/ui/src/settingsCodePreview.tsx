@@ -18,7 +18,7 @@ import {
   ThemeSelect,
 } from "@/settings/SettingsPageParts.js";
 import { getCodePreviewTheme } from "@/lib/codePreviewPreferences.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import type { CodePreviewSettings } from "@/store/index.js";
 import { THEME_MODES } from "@/settings/settingsPageConfig.js";
 import { MAX_UI_FONT_SIZE_PX, MIN_UI_FONT_SIZE_PX } from "@/lib/uiFontSize.js";
@@ -93,7 +93,7 @@ export function AppearanceSectionContent({
   uiFontSizePx: number;
   setUiFontSizePx: (fontSizePx: number) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const activePreviewMode = resolveTheme(theme);
 
   return (
@@ -118,7 +118,7 @@ export function AppearanceSectionContent({
               })}
               control={
                 <Select value={theme} onValueChange={(value) => setTheme(value as Theme)}>
-                  <SelectTrigger size="lg" className="w-[260px] min-w-0 justify-between">
+                  <SelectTrigger size="lg" className="w-65 min-w-0 justify-between">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -168,7 +168,7 @@ export function AppearanceSectionContent({
               })}
             </p>
           </div>
-          <Card className="border border-border bg-card py-0 shadow-none [&_[data-slot=select-trigger]]:w-full">
+          <Card className="border border-border bg-card py-0 shadow-none **:data-[slot=select-trigger]:w-full">
             <CardContent className="space-y-0 px-0">
               <SettingsRow
                 label={intl.formatMessage({ id: "settings.lightTheme" })}

@@ -6,7 +6,7 @@ import { dirname, join, resolve } from "node:path";
  *
  * The persona layer lives in two scopes and both are plain files on disk, so there is
  * no separate store and the CLI context adapter stays the only reader:
- *   - user scope:      `~/.zcode/SOUL.md`
+ *   - user scope:      `~/.mesacode/SOUL.md`
  *   - workspace scope: `<root>/SOUL.md`
  *
  * The settings UI edits these files; the runtime picks the change up on the next
@@ -24,7 +24,7 @@ export interface SoulFileContent {
 }
 
 export function resolveUserSoulFilePath(homeDir: string): string {
-  return join(homeDir, ".zcode", SOUL_FILE_NAME);
+  return join(homeDir, ".mesacode", SOUL_FILE_NAME);
 }
 
 export function resolveWorkspaceSoulFilePath(rootPath: string): string {

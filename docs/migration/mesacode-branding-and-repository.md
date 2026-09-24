@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Mesa Code is the user-facing product name. Internal `zcode` identifiers remain temporarily where they are required for runtime compatibility. This document records the migration boundary and the Git repository source of truth.
+Mesa Code is the user-facing product name. Internal `mesacode` identifiers remain temporarily where they are required for runtime compatibility. This document records the migration boundary and the Git repository source of truth.
 
 ## Product naming
 
@@ -14,7 +14,7 @@ Use **Mesa Code** in user-facing text:
 - logos, icons, tray entries, and shortcuts
 - README files and public documentation
 
-Do not use `ZCode` as a visible product label.
+Do not use `Mesacode` as a visible product label.
 
 Provider names such as `Z.ai` remain unchanged because they identify an external provider.
 
@@ -22,13 +22,13 @@ Provider names such as `Z.ai` remain unchanged because they identify an external
 
 The following identifiers remain internal until a separately reviewed protocol and data migration is complete:
 
-- `@zcode/*` package names
-- `apps/zcode-cli`
-- `ZCODE_*` environment variables
-- `.zcode/` storage and `.zcodeignore`
-- `zcode://` deep links
-- `zcode-protocol`
-- internal TypeScript symbols containing `ZCode`
+- `@mesacode/*` package names
+- `apps/mesacode-cli`
+- `MESACODE_*` environment variables
+- `.mesacode/` storage and `.mesacodeignore`
+- `mesacode://` deep links
+- `mesacode-protocol`
+- internal TypeScript symbols containing `Mesacode`
 
 Do not bulk-replace these identifiers. They affect package resolution, persisted data, protocol compatibility, update behavior, and existing user installations.
 
@@ -37,7 +37,7 @@ Do not bulk-replace these identifiers. They affect package resolution, persisted
 A workspace-free conversation uses the internal fallback directory:
 
 ```text
-~/.zcode/workspace/default
+~/.mesacode/workspace/default
 ```
 
 This directory is an Agent working directory, not a user-selected project. It exists because the Agent process requires a real current working directory. Storage migration to `~/.mesacode` requires a separate idempotent migration design and is not implied by branding changes.
@@ -82,7 +82,7 @@ pnpm fmt:check
 For Windows installer validation:
 
 ```powershell
-$env:ZCODE_SKIP_REMOTE_ASSETS="1"
+$env:MESACODE_SKIP_REMOTE_ASSETS="1"
 pnpm bundle:desktop
 ```
 

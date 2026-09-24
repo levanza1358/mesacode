@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { ApiClient, ApiRequestInit } from "@zcode/shared";
+import type { ApiClient, ApiRequestInit } from "@mesacode/shared";
 import {
   parseModelCatalogPayload,
   resolveModelCatalogUrl,

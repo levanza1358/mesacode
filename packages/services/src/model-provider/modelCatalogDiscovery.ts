@@ -1,7 +1,7 @@
 /**
  * Service-layer discovery contract.
  *
- * The pure URL/payload helpers live in `@zcode/provider` because the CLI agent also
+ * The pure URL/payload helpers live in `@mesacode/provider` because the CLI agent also
  * probes a provider's catalog. They are re-exported here so existing service and UI
  * entry points keep a single import surface.
  */
@@ -9,7 +9,7 @@ export {
   parseModelCatalogPayload,
   resolveModelCatalogUrl,
   type ModelCatalogApiFacts,
-} from "@zcode/provider";
+} from "@mesacode/provider";
 
 /**
  * Normalized outcome of probing a provider's own model catalog endpoint.

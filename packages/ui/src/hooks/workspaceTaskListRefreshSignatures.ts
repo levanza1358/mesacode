@@ -1,4 +1,4 @@
-import type { ZCodeTaskMeta } from "@zcode/shared";
+import type { MesacodeTaskMeta } from "@mesacode/shared";
 
 type WorkspaceTaskListVersionEntry = readonly [workspaceKey: string, version: number];
 
@@ -26,7 +26,7 @@ export function buildWorkspaceRemoteSessionSignature(
     .join("|");
 }
 
-export function areTaskListItemsEquivalent(left: ZCodeTaskMeta[], right: ZCodeTaskMeta[]): boolean {
+export function areTaskListItemsEquivalent(left: MesacodeTaskMeta[], right: MesacodeTaskMeta[]): boolean {
   if (left.length !== right.length) {
     return false;
   }

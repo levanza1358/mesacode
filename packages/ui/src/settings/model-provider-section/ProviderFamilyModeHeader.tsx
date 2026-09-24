@@ -5,7 +5,7 @@ import {
   isStartPlanModelProviderId,
   testId,
   type ProviderFamilyConnectionSelectionSettings,
-} from "@zcode/shared";
+} from "@mesacode/shared";
 import { InfoIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import {
@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { connectionSelectionMatchesNavigationItem } from "@/settings/model-provider-section/useModelProviderNavigation.js";
 import { resolveModelProviderNavLogo } from "@/settings/model-provider-section/utils.js";
 import { ProviderLogo } from "./ProviderLogo.js";
@@ -105,7 +105,7 @@ export function ProviderFamilyPlanModeSwitch({
   connectionSelections?: ProviderFamilyConnectionSelectionSettings;
   onSelectNavItem?: (item: ModelProviderNavItem) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   if (!selectedNavItem || !onSelectNavItem) {
     return null;
   }
@@ -203,7 +203,7 @@ export function ProviderFamilyPlanModeSwitch({
             <SelectItem
               key={option.key}
               value={option.key}
-              className="min-w-0 whitespace-normal pr-8 [overflow-wrap:anywhere]"
+              className="min-w-0 whitespace-normal pr-8 wrap-anywhere"
               data-testid={testId(TID_MODEL_PROVIDER_CONNECTION_MODE_ITEM, option.key)}
             >
               {option.label}

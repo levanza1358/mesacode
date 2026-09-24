@@ -12,14 +12,14 @@ import {
   resolveModelProviderFamilySpecByProviderId,
   type ModelConnectivityResult,
   type OAuthProviderId,
-} from "@zcode/shared";
+} from "@mesacode/shared";
 import {
   getProviderFormApiKeyManagementUrl,
   type ProviderSettingsFormProvider,
 } from "@/lib/providerSettingsFormTypes.js";
 import { ArrowRightIcon, AstroidIcon, UsersIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import {
   type CodingPlanStatus,
   type CodingPlanProviderId,
@@ -60,9 +60,9 @@ import {
 } from "@/lib/codingPlanFunnelTelemetry.js";
 import { useCodingPlanUpgradeDialog } from "@/settings/CodingPlanUpgradeDialogProvider.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
-import type { ProviderSettingsView } from "@zcode/services";
-import type { ModelDiscoveryResult } from "@zcode/services";
-import type { SavePersonalModelDraftInput } from "@zcode/provider";
+import type { ProviderSettingsView } from "@mesacode/services";
+import type { ModelDiscoveryResult } from "@mesacode/services";
+import type { SavePersonalModelDraftInput } from "@mesacode/provider";
 import { resolveAccountProviderInspectionAccess } from "@/lib/accountProviderAccess.js";
 import { projectProviderSettingsViewToFormProviders } from "@/lib/providerSettingsFormProjection.js";
 
@@ -305,7 +305,7 @@ export function ModelProviderSectionDetail({
   onSelectNavItem?: (item: ModelProviderNavItem) => void;
   providerSettingsView?: ProviderSettingsView | null;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
   const loadingLabel = intl.formatMessage({ id: "common.loading" });
   const [upgradePlansVisibleProviderId, setUpgradePlansVisibleProviderId] =
@@ -898,7 +898,7 @@ function CodingPlanPurchaseChoiceBanners({
   onSelectStartPlan?: () => void;
 }) {
   const entryGate = useCodingPlanEntryGate();
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useMesacodeIntl();
   const startPlanSummary = startPlanPreview
     ? resolveStartPlanEntitlementSummary(startPlanPreview, intl, locale)
     : null;
@@ -1175,7 +1175,7 @@ function PurchaseChoiceBannerPrice({
   currency: string | null;
   locale: string;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const formattedAmount = formatCodingPlanAmount(price, currency, locale);
   const isChineseLocale = locale.toLowerCase().startsWith("zh");
   if (!isChineseLocale) {
@@ -1219,7 +1219,7 @@ function CodingPlanAccessBanner({ title, description }: { title: string; descrip
 
 function resolveCodingPlanAccessBanner(
   status: CodingPlanStatus,
-  intl: ReturnType<typeof useZCodeIntl>["intl"],
+  intl: ReturnType<typeof useMesacodeIntl>["intl"],
   reloginOnFailure = false,
 ): { title: string; description: string } | null {
   if (

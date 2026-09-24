@@ -5,7 +5,7 @@ This is the Mesa Code product behavior state-space enumerator. The current versi
 Start:
 
 ```sh
-pnpm --filter @zcode/formal-proof dev
+pnpm --filter @mesacode/formal-proof dev
 ```
 
 Open:

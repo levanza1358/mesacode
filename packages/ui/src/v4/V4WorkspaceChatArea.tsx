@@ -3,9 +3,9 @@ import { useCallback, useMemo, useRef, type CSSProperties, type ReactNode } from
 import type {
   GitChangeSourceId,
   GitRepositorySummary,
-  ZCodeProvider,
-  ZCodeTaskChangeSummary,
-} from "@zcode/shared";
+  MesacodeProvider,
+  MesacodeTaskChangeSummary,
+} from "@mesacode/shared";
 import type { CodeViewerSource } from "@/lib/codeViewer.js";
 import type { AssistantPreviewCardsAutoOpenRequest } from "@/lib/assistantPreviewCards.js";
 import type { OpenAutomationsMain } from "@/lib/taskNavigationHistory.js";
@@ -28,7 +28,6 @@ import {
   effectiveFocusedPaneId,
   MAX_WORKBENCH_PANES,
   paneWorkspaceKey,
-  PRIMARY_LEAF,
   usePaneLayoutStore,
   V4_PRIMARY_PANE_ID,
   type PaneSplitSide,
@@ -78,7 +77,7 @@ interface V4WorkspaceChatAreaProps {
   /** primary pane 绑定的 CLI session（既有选择态 activeTaskId）；null = draft。 */
   sessionId: string | null;
   activeSelectionSideChatSessionId?: string | null;
-  provider?: ZCodeProvider;
+  provider?: MesacodeProvider;
   /** primary pane createSession/fork 后接入既有选择路径（handleSelectTask）。 */
   onSessionCreated?: (sessionId: string) => void;
   /** primary pane 会话删除后回 draft（shell 起新草稿）。 */
@@ -96,7 +95,7 @@ interface V4WorkspaceChatAreaProps {
   gitDirtyFileCount?: number;
   gitWorktreeReviewSourceId?: GitChangeSourceId | null;
   gitWorktreeChangeSummary?: { added: number; removed: number } | null;
-  activeTaskChangeSummary?: ZCodeTaskChangeSummary | null;
+  activeTaskChangeSummary?: MesacodeTaskChangeSummary | null;
   summaryPanelVariantOverride?: ChatViewSummaryPanelVariant | null;
   onSummaryPanelVariantOverrideChange?: (variant: ChatViewSummaryPanelVariant | null) => void;
   onRefreshGit?: () => void;

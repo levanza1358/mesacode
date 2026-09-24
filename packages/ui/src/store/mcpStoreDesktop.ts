@@ -5,8 +5,8 @@ import type {
   MigrateLegacyCommonMcpResult,
   NativeMcpServerRecord,
   SaveCliMcpToUserDirectoryRequest,
-} from "@zcode/shared";
-import type { IMcpSyncService } from "@zcode/services";
+} from "@mesacode/shared";
+import type { IMcpSyncService } from "@mesacode/services";
 import { logger } from "@/logger.js";
 
 export type McpPlatformService = Pick<

@@ -1,4 +1,4 @@
-import { type UsageEntitlementSnapshot } from "@zcode/shared";
+import { type UsageEntitlementSnapshot } from "@mesacode/shared";
 import { type ProviderSettingsFormProvider } from "@/lib/providerSettingsFormTypes.js";
 
 export function pickCodingPlanEntitlementProvider(

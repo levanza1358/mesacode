@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "@/components/ui/toast.js";
 import { nanoid } from "nanoid";
-import type { AttachmentRef } from "@zcode/shared/zcode-protocol-v4";
+import type { AttachmentRef } from "@mesacode/shared/mesacode-protocol-v4";
 import { WORKSPACE_FILE_DRAG_MIME } from "@/lib/workspaceFileDrag.js";
 import {
   MAX_CHAT_ATTACHMENTS,
@@ -11,8 +11,7 @@ import {
   OversizedInlineVideoAttachmentError,
   createChatComposerAttachment,
   createChatComposerPathAttachment,
-  createClipboardTextAttachmentFilenameForDate,
-  createClipboardTextPathComposerAttachment,
+  createClipboardTextComposerAttachment,
   formatAttachmentSize,
   revokeChatComposerAttachment,
   serializeChatComposerAttachment,
@@ -28,11 +27,11 @@ import {
 } from "@/lib/whiteboard.js";
 import { useWhiteboardStore } from "@/store/whiteboardStore.js";
 import type { ChatComposerPasteEvent } from "@/LexicalChatInput.js";
-import type { IPromptAttachmentTransferService } from "@zcode/services";
-import type { IPlatformService } from "@zcode/shared";
+import type { IPromptAttachmentTransferService } from "@mesacode/services";
+import type { IPlatformService } from "@mesacode/shared";
 import { usePlatform } from "@/hooks/usePlatform.js";
 import { useServices } from "@/hooks/useServices.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { logger } from "@/logger.js";
 import {
   exposeComposerAttachmentScopeKeyForE2E,
@@ -202,7 +201,7 @@ export function useComposerAttachments(
   } = options;
   const platform = usePlatform();
   const { promptAttachmentTransferService } = useServices();
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const scopeKey = buildScopeKey(workspacePath, workspaceIdentity, scopeId);
   exposeComposerAttachmentScopeKeyForE2E(scopeKey);
 
@@ -761,12 +760,7 @@ export function useComposerAttachments(
       event.stopPropagation?.();
       void (async () => {
         try {
-          const attachment = await platform.createTempTextAttachment?.({
-            text,
-            filename: createClipboardTextAttachmentFilenameForDate(),
-          });
-          if (!attachment) throw new Error("当前平台不支持临时文本附件");
-          addPreparedAttachments([createClipboardTextPathComposerAttachment(text, attachment)]);
+          addPreparedAttachments([createClipboardTextComposerAttachment(text)]);
         } catch (error) {
           logger.warn("[v4-composer-attachments] 创建粘贴文本临时附件失败", error);
           setAttachmentError(
@@ -778,7 +772,7 @@ export function useComposerAttachments(
         }
       })();
     },
-    [addAttachmentFiles, addPreparedAttachments, disabled, intl, platform],
+    [addAttachmentFiles, addPreparedAttachments, disabled, intl],
   );
 
   const clearDragFeedbackTimer = useCallback(() => {

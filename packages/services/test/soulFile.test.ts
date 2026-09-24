@@ -7,7 +7,7 @@ import { readSoulFile, writeSoulFile } from "../src/file/soulFile.js";
 import { buildAutoSoulContent } from "../src/file/autoSoul.js";
 
 async function withTempDir(run: (dir: string) => Promise<void>): Promise<void> {
-  const dir = await mkdtemp(join(tmpdir(), "zcode-soul-"));
+  const dir = await mkdtemp(join(tmpdir(), "mesacode-soul-"));
   try {
     await run(dir);
   } finally {
@@ -26,7 +26,7 @@ test("readSoulFile returns a template preview before the file exists", async () 
 test("writeSoulFile creates the user scope file and readSoulFile reports it as a file", async () => {
   await withTempDir(async (dir) => {
     await writeSoulFile({ homeDir: dir, scope: "user", content: "# saved soul\n" });
-    assert.equal(await readFile(join(dir, ".zcode", "SOUL.md"), "utf8"), "# saved soul\n");
+    assert.equal(await readFile(join(dir, ".mesacode", "SOUL.md"), "utf8"), "# saved soul\n");
 
     const result = await readSoulFile({ homeDir: dir, scope: "user" });
     assert.equal(result.source, "file");

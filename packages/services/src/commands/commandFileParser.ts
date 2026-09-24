@@ -1,4 +1,4 @@
-import type { CommandConfig } from "@zcode/shared";
+import type { CommandConfig } from "@mesacode/shared";
 
 export type CommandFileFormat = "markdown";
 

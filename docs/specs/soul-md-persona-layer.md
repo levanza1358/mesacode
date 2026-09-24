@@ -8,7 +8,7 @@ Mesa Code loads a user-owned persona file named `SOUL.md` in addition to the exi
 `AGENTS.md` project instruction file. Both files support a global (user) scope and a
 workspace (project) scope.
 
-- Global persona: `~/.zcode/SOUL.md`
+- Global persona: `~/.mesacode/SOUL.md`
 - Workspace persona: `SOUL.md` at the workspace project root
 
 When both exist, their contents are concatenated, not one winning over the other.
@@ -49,7 +49,7 @@ User request in the current chat
 
 ## Ownership and boundary
 
-- The CLI context source adapter (`apps/zcode-cli/packages/adapters`) owns file
+- The CLI context source adapter (`apps/mesacode-cli/packages/adapters`) owns file
   discovery, reading, byte caps, and diagnostics for both `SOUL.md` and `AGENTS.md`.
 - The core context builder owns section rendering into the system prompt.
 - No second persistence path is introduced. `SOUL.md` is a plain file on disk, the same
@@ -83,11 +83,11 @@ a blank or generic file.
 ## Acceptance scenarios
 
 1. With no `SOUL.md` anywhere, agent behavior is unchanged and no `soulMd` section is emitted.
-2. Creating `~/.zcode/SOUL.md` makes the persona apply to every workspace.
+2. Creating `~/.mesacode/SOUL.md` makes the persona apply to every workspace.
 3. Creating a project `SOUL.md` adds workspace-specific persona on top of the global one.
 4. A `SOUL.md` that requests elevated tool permissions does not grant them; the code-level
    permission gate still applies.
-5. `AGENTS.md` behavior is unchanged; it is still discovered from `~/.zcode/AGENTS.md`
+5. `AGENTS.md` behavior is unchanged; it is still discovered from `~/.mesacode/AGENTS.md`
    and the workspace root and merged.
 6. Files larger than the byte cap are truncated and reported through the existing
    diagnostics channel.

@@ -6,7 +6,7 @@
  */
 import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/components/lib/utils.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { logger } from "@/logger.js";
 
@@ -77,7 +77,7 @@ function resolveGreetingFontSizePx({
 }
 
 export function ConversationDraftEmptyState({ className }: { className?: string }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const isOfficeMode = useIsOfficeMode();
   const [greetingDate, setGreetingDate] = useState(() => new Date());
   const [greetingFontSizePx, setGreetingFontSizePx] = useState(GREETING_MAX_FONT_SIZE_PX);
@@ -176,7 +176,7 @@ export function ConversationDraftEmptyState({ className }: { className?: string 
       <div
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute left-1/2 top-1/2 aspect-[5/4] w-[min(72vw,25rem)] -mt-10",
+          "pointer-events-none absolute left-1/2 top-1/2 aspect-5/4 w-[min(72vw,25rem)] -mt-10",
           "-translate-x-1/2 -translate-y-1/2 text-foreground-subtlest",
         )}
       >
@@ -192,7 +192,7 @@ export function ConversationDraftEmptyState({ className }: { className?: string 
         }
         className={cn(
           "relative z-10 w-full px-4 text-center font-medium text-foreground",
-          "text-[length:var(--v4-draft-greeting-font-size)]/[1.2]",
+          "text-(length:--v4-draft-greeting-font-size)/[1.2]",
         )}
       >
         <span
@@ -219,8 +219,8 @@ function MesaCodeEmptyStateLogo({ className }: { className?: string }) {
           "opacity-70 dark:hidden",
           "[-webkit-mask-image:linear-gradient(to_bottom,black_0%,transparent_70%,transparent_100%)]",
           "[-webkit-mask-repeat:no-repeat] [-webkit-mask-size:100%_100%]",
-          "[mask-image:linear-gradient(to_bottom,black_0%,transparent_70%,transparent_100%)]",
-          "[mask-repeat:no-repeat] [mask-size:100%_100%]",
+          "mask-[linear-gradient(to_bottom,black_0%,transparent_70%,transparent_100%)]",
+          "mask-no-repeat mask-size-[100%_100%]",
         )}
         width="400"
         height="320"

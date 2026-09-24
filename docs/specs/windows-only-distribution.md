@@ -22,5 +22,5 @@ Mesa Code desktop distribution targets Windows x64 only. macOS and Linux install
 - Passing Linux or macOS target fails before preparation.
 - Windows x64 bundle continues to produce `.exe` artifacts.
 - Interactive uninstaller shows a delete-data option, disabled by default.
-- When selected, uninstaller removes Mesa Code app data, caches, and `%USERPROFILE%\.zcode` after application files are removed.
+- When selected, uninstaller removes Mesa Code app data, caches, and `%USERPROFILE%\.mesacode` after application files are removed.
 - Silent uninstall keeps existing behavior unless `--delete-app-data` is explicitly passed.

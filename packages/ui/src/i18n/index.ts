@@ -1,2 +1,2 @@
-export { ZCodeIntlProvider, useZCodeIntl } from "./IntlProvider.js";
+export { MesacodeIntlProvider, useMesacodeIntl } from "./IntlProvider.js";
 export type { IntlInstance } from "./IntlProvider.js";

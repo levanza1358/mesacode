@@ -34,7 +34,7 @@
  */
 
 /*
- * styles.css is pulled in indirectly by web/desktop from the @zcode/ui package. In this workspace setup Tailwind v4
+ * styles.css is pulled in indirectly by web/desktop from the @mesacode/ui package. In this workspace setup Tailwind v4
  * cannot reliably add the UI package's TSX components to the scan with source(".") alone, so utilities used by
  * newer components such as Select (bg-popover, shadow-md, overflow-x-hidden) are simply absent, leaving the page with
  * only a subset of "accidentally matched" generic classes. This explicit @source entry makes Tailwind always scan the UI package source,
@@ -808,11 +808,11 @@ body {
  * hits the global scrollbar style above and exposes a scrollbar inside the slide. Slide content has no user scrolling interaction,
  * so here we hide native scrollbars inside the render surface entirely.
  */
-[data-zcode-pptx-render-surface] * {
+[data-mesacode-pptx-render-surface] * {
   scrollbar-width: none;
 }
 
-[data-zcode-pptx-render-surface] *::-webkit-scrollbar {
+[data-mesacode-pptx-render-surface] *::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
@@ -905,7 +905,7 @@ body {
   }
 }
 
-@keyframes zcode-stream-text-in {
+@keyframes mesacode-stream-text-in {
   0% {
     opacity: 0;
   }
@@ -915,7 +915,7 @@ body {
   }
 }
 
-@keyframes zcode-draft-prompt-waterfall {
+@keyframes mesacode-draft-prompt-waterfall {
   from {
     opacity: 0;
     clip-path: inset(0 0 100% 0);
@@ -929,13 +929,13 @@ body {
   }
 }
 
-.zcode-draft-prompt-waterfall {
-  animation: zcode-draft-prompt-waterfall 260ms cubic-bezier(0.22, 1, 0.36, 1)
-    var(--zcode-draft-prompt-waterfall-delay, 0ms) both;
+.mesacode-draft-prompt-waterfall {
+  animation: mesacode-draft-prompt-waterfall 260ms cubic-bezier(0.22, 1, 0.36, 1)
+    var(--mesacode-draft-prompt-waterfall-delay, 0ms) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-draft-prompt-waterfall {
+  .mesacode-draft-prompt-waterfall {
     animation: none;
   }
 }
@@ -968,7 +968,7 @@ body {
   }
 }
 
-@keyframes zcode-stream-marker-in {
+@keyframes mesacode-stream-marker-in {
   0% {
     color: transparent;
   }
@@ -978,35 +978,35 @@ body {
   }
 }
 
-[data-zcode-stream-animate="true"] {
-  animation: zcode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
-    var(--zcode-stream-animation-delay, 0ms) both;
+[data-mesacode-stream-animate="true"] {
+  animation: mesacode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
+    var(--mesacode-stream-animation-delay, 0ms) both;
   will-change: opacity;
 }
 
-[data-zcode-stream-marker-animate="true"]::marker {
-  animation: zcode-stream-marker-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
-    var(--zcode-stream-animation-delay, 0ms) both;
+[data-mesacode-stream-marker-animate="true"]::marker {
+  animation: mesacode-stream-marker-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
+    var(--mesacode-stream-animation-delay, 0ms) both;
 }
 
-[data-zcode-tool-stream-animate="true"],
-[data-zcode-chat-loading-animate="true"] {
-  animation: zcode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+[data-mesacode-tool-stream-animate="true"],
+[data-mesacode-chat-loading-animate="true"] {
+  animation: mesacode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: opacity;
 }
 
 /*  Radix Collapsible writes inline animation-name:none while measuring the closed height.
    The assistant history section needs the height animation to keep playing during delayed auto-collapse unmount,
    so here we use !important to override the Radix inline style, scoped to explicitly marked collapse windows only. */
-[data-zcode-collapsible-animate-close="true"][data-state="closed"] {
-  animation: zcode-collapsible-up 300ms ease-in-out forwards !important;
+[data-mesacode-collapsible-animate-close="true"][data-state="closed"] {
+  animation: mesacode-collapsible-up 300ms ease-in-out forwards !important;
 }
 
-[data-zcode-collapsible-animate-close="true"][data-state="closed"] > * {
-  animation: zcode-collapsible-fade-out 300ms ease-in-out forwards !important;
+[data-mesacode-collapsible-animate-close="true"][data-state="closed"] > * {
+  animation: mesacode-collapsible-fade-out 300ms ease-in-out forwards !important;
 }
 
-@keyframes zcode-collapsible-up {
+@keyframes mesacode-collapsible-up {
   from {
     height: var(--radix-collapsible-content-height);
   }
@@ -1016,7 +1016,7 @@ body {
   }
 }
 
-@keyframes zcode-collapsible-fade-out {
+@keyframes mesacode-collapsible-fade-out {
   from {
     opacity: 1;
   }
@@ -1027,28 +1027,28 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-zcode-stream-animate="true"],
-  [data-zcode-stream-marker-animate="true"]::marker,
-  [data-zcode-tool-stream-animate="true"],
-  [data-zcode-chat-loading-animate="true"],
-  [data-zcode-collapsible-animate-close="true"][data-state="closed"],
-  [data-zcode-collapsible-animate-close="true"][data-state="closed"] > * {
+  [data-mesacode-stream-animate="true"],
+  [data-mesacode-stream-marker-animate="true"]::marker,
+  [data-mesacode-tool-stream-animate="true"],
+  [data-mesacode-chat-loading-animate="true"],
+  [data-mesacode-collapsible-animate-close="true"][data-state="closed"],
+  [data-mesacode-collapsible-animate-close="true"][data-state="closed"] > * {
     animation: none;
   }
 }
 
 /* Feedback animation on like/dislike selection: following WeChat/X, only two beats — icon bounce plus tiny particle scatter.
    Particles are drawn with box-shadow on ::after and follow currentColor: zero extra DOM, no new colors. */
-.zcode-reaction-burst {
+.mesacode-reaction-burst {
   position: relative;
   display: inline-flex;
 }
 
-.zcode-reaction-burst > svg {
-  animation: zcode-reaction-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+.mesacode-reaction-burst > svg {
+  animation: mesacode-reaction-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.zcode-reaction-burst::after {
+.mesacode-reaction-burst::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -1060,14 +1060,14 @@ body {
   background: transparent;
   opacity: 0;
   pointer-events: none;
-  animation: zcode-reaction-particles 560ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
+  animation: mesacode-reaction-particles 560ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
 }
 
-.animate-zcode-alarm-ring {
-  animation: zcode-alarm-ring 600ms ease-in-out infinite;
+.animate-mesacode-alarm-ring {
+  animation: mesacode-alarm-ring 600ms ease-in-out infinite;
 }
 
-@keyframes zcode-alarm-ring {
+@keyframes mesacode-alarm-ring {
   0%,
   100% {
     transform: rotate(-10deg);
@@ -1078,7 +1078,7 @@ body {
   }
 }
 
-@keyframes zcode-reaction-pop {
+@keyframes mesacode-reaction-pop {
   0% {
     transform: scale(0);
   }
@@ -1096,7 +1096,7 @@ body {
   }
 }
 
-@keyframes zcode-reaction-particles {
+@keyframes mesacode-reaction-particles {
   0% {
     opacity: 0;
     box-shadow:
@@ -1125,8 +1125,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-reaction-burst > svg,
-  .zcode-reaction-burst::after {
+  .mesacode-reaction-burst > svg,
+  .mesacode-reaction-burst::after {
     animation: none;
   }
 }
@@ -1144,24 +1144,24 @@ body {
   }
 }
 
-@keyframes zcode-task-interaction-countdown {
+@keyframes mesacode-task-interaction-countdown {
   from {
-    transform: scaleX(var(--zcode-interaction-progress, 1));
+    transform: scaleX(var(--mesacode-interaction-progress, 1));
   }
   to {
     transform: scaleX(0);
   }
 }
 
-.zcode-task-interaction-countdown-fill {
-  animation: zcode-task-interaction-countdown var(--zcode-interaction-remaining-ms, 240000ms) linear
+.mesacode-task-interaction-countdown-fill {
+  animation: mesacode-task-interaction-countdown var(--mesacode-interaction-remaining-ms, 240000ms) linear
     forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-task-interaction-countdown-fill {
+  .mesacode-task-interaction-countdown-fill {
     animation: none;
-    transform: scaleX(var(--zcode-interaction-progress, 1));
+    transform: scaleX(var(--mesacode-interaction-progress, 1));
   }
 }
 
@@ -1169,12 +1169,12 @@ body {
   animation: workspace-remote-connecting-breathe 1.8s ease-in-out infinite;
 }
 
-.zcode-update-charge-progress [data-slot="progress-indicator"] {
+.mesacode-update-charge-progress [data-slot="progress-indicator"] {
   position: relative;
   overflow: hidden;
 }
 
-.zcode-update-charge-progress [data-slot="progress-indicator"]::after {
+.mesacode-update-charge-progress [data-slot="progress-indicator"]::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -1187,11 +1187,11 @@ body {
     color-mix(in oklab, var(--color-primary-foreground) 62%, transparent),
     transparent
   );
-  animation: zcode-update-charge-sweep 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: mesacode-update-charge-sweep 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   transform: translateX(-120%);
 }
 
-@keyframes zcode-update-charge-sweep {
+@keyframes mesacode-update-charge-sweep {
   0% {
     opacity: 0.35;
     transform: translateX(-120%);
@@ -1208,7 +1208,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-update-charge-progress [data-slot="progress-indicator"]::after {
+  .mesacode-update-charge-progress [data-slot="progress-indicator"]::after {
     animation: none;
     opacity: 0.2;
     transform: none;

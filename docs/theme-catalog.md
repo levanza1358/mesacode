@@ -2,7 +2,7 @@
 
 ## Behavior
 
-- Theme preference persists under the existing `zcode-theme` key.
+- Theme preference persists under the existing `mesacode-theme` key.
 - System, Zai Light, Zai Dark, Black, Midnight, Ocean, Forest, Purple, Rose, and Amber are selectable.
 - Each theme controls surface mode and accent tokens through semantic CSS variables.
 - Theme changes apply immediately and remain compatible with existing `Theme` consumers.
@@ -32,4 +32,4 @@
 
 ## Compatibility
 
-The persisted key remains `zcode-theme` for upgrade compatibility. Internal package names, environment variables, protocol schemes, and storage paths are not renamed by theme work.
+The persisted key remains `mesacode-theme` for upgrade compatibility. Internal package names, environment variables, protocol schemes, and storage paths are not renamed by theme work.

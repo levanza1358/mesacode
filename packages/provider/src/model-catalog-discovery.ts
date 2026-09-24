@@ -5,7 +5,7 @@ import type { ProviderApiType } from "./config/provider-config.js";
  *
  * They carry no I/O and no Environment state, so the CLI agent and the Host service
  * layer can derive the same probe URL and parse the same payload without the CLI
- * reaching into `@zcode/services`.
+ * reaching into `@mesacode/services`.
  */
 
 /** The provider API facts a catalog probe needs. */

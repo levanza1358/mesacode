@@ -462,7 +462,7 @@ Overlay rules:
 
 ## Elevation and Depth
 
-ZCode should use restrained depth. Layer primarily through background contrast, borders, and radius before relying on heavy shadows.
+Mesacode should use restrained depth. Layer primarily through background contrast, borders, and radius before relying on heavy shadows.
 
 Recommended elevation levels:
 

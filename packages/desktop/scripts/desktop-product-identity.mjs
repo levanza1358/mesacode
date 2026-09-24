@@ -1,16 +1,16 @@
 /**
- * 构建期开关：为真时安装包使用 Preview 身份，而后端环境仍由 `ZCODE_ENV` 单独决定。
- * 典型用法是 `ZCODE_ENV=production ZCODE_PREVIEW_IDENTITY=1`，得到一个连接生产后端、
+ * 构建期开关：为真时安装包使用 Preview 身份，而后端环境仍由 `MESACODE_ENV` 单独决定。
+ * 典型用法是 `MESACODE_ENV=production MESACODE_PREVIEW_IDENTITY=1`，得到一个连接生产后端、
  * 可与正式版并排安装的 `Mesa Code Preview`。
  *
- * 注意：用户可见产品身份与 ZCode 内部兼容标识分离。appId、协议、环境变量和存储目录
+ * 注意：用户可见产品身份与 Mesacode 内部兼容标识分离。appId、协议、环境变量和存储目录
  * 继续保留旧值，避免已有安装、会话、插件和远程连接失去兼容性。
  */
-export const ZCODE_PREVIEW_IDENTITY_ENV = "ZCODE_PREVIEW_IDENTITY";
+export const MESACODE_PREVIEW_IDENTITY_ENV = "MESACODE_PREVIEW_IDENTITY";
 
 const PRODUCTION_IDENTITY = Object.freeze({
   flavor: "production",
-  appId: "dev.zcode.app",
+  appId: "dev.mesacode.app",
   productName: "Mesa Code",
   executableName: "MesaCode",
   linuxExecutableName: "mesacode",
@@ -20,7 +20,7 @@ const PRODUCTION_IDENTITY = Object.freeze({
 
 const PREVIEW_IDENTITY = Object.freeze({
   flavor: "preview",
-  appId: "dev.zcode.app.preview",
+  appId: "dev.mesacode.app.preview",
   productName: "Mesa Code Preview",
   executableName: "MesaCode Preview",
   linuxExecutableName: "mesacode-preview",
@@ -33,17 +33,17 @@ export const desktopProductIdentities = Object.freeze({
   preview: PREVIEW_IDENTITY,
 });
 
-function normalizeDesktopZCodeEnv(env) {
-  return env.ZCODE_ENV?.trim().toLowerCase() === "production" ? "production" : "test";
+function normalizeDesktopMesacodeEnv(env) {
+  return env.MESACODE_ENV?.trim().toLowerCase() === "production" ? "production" : "test";
 }
 
 /**
  * 开关只有一种开启拼写 `1`（`0` / 空 = 关闭），与 CI workflow 规则和 release 门的
- * `$ZCODE_PREVIEW_IDENTITY == "1"` 精确比较保持同一套语义。其它拼写在构建期直接失败，
+ * `$MESACODE_PREVIEW_IDENTITY == "1"` 精确比较保持同一套语义。其它拼写在构建期直接失败，
  * 避免 `true` 之类在 YAML 路由层漏匹配、却在脚本层被当成开启，把 Preview 包打进生产验收目录。
  */
 export function isPreviewIdentityRequested(env = process.env) {
-  const value = env[ZCODE_PREVIEW_IDENTITY_ENV]?.trim() ?? "";
+  const value = env[MESACODE_PREVIEW_IDENTITY_ENV]?.trim() ?? "";
   if (value === "1") {
     return true;
   }
@@ -51,21 +51,21 @@ export function isPreviewIdentityRequested(env = process.env) {
     return false;
   }
   throw new Error(
-    `invalid ${ZCODE_PREVIEW_IDENTITY_ENV}=${env[ZCODE_PREVIEW_IDENTITY_ENV]}; expected 1 or 0`,
+    `invalid ${MESACODE_PREVIEW_IDENTITY_ENV}=${env[MESACODE_PREVIEW_IDENTITY_ENV]}; expected 1 or 0`,
   );
 }
 
 /**
- * 产品身份（flavor）与后端环境（`ZCODE_ENV`）是两个轴：
- * - `ZCODE_ENV=test` 一律是 Preview，测试后端不能顶着正式 `ZCode` 身份覆盖用户的正式安装；
- * - `ZCODE_ENV=production` 默认是正式身份，显式 `ZCODE_PREVIEW_IDENTITY=1` 时改用 Preview 身份。
- * 未知 `ZCODE_ENV` 继续按 test 处理，和共享层 normalizeZCodeEnv 的 fail-safe 默认值一致。
+ * 产品身份（flavor）与后端环境（`MESACODE_ENV`）是两个轴：
+ * - `MESACODE_ENV=test` 一律是 Preview，测试后端不能顶着正式 `Mesacode` 身份覆盖用户的正式安装；
+ * - `MESACODE_ENV=production` 默认是正式身份，显式 `MESACODE_PREVIEW_IDENTITY=1` 时改用 Preview 身份。
+ * 未知 `MESACODE_ENV` 继续按 test 处理，和共享层 normalizeMesacodeEnv 的 fail-safe 默认值一致。
  */
 export function resolveDesktopProductFlavor(env = process.env) {
   if (isPreviewIdentityRequested(env)) {
     return "preview";
   }
-  return normalizeDesktopZCodeEnv(env) === "production" ? "production" : "preview";
+  return normalizeDesktopMesacodeEnv(env) === "production" ? "production" : "preview";
 }
 
 export function resolveDesktopProductIdentity(env = process.env) {
@@ -74,10 +74,10 @@ export function resolveDesktopProductIdentity(env = process.env) {
 
 /**
  * 产物文件名后缀标记的是后端环境而不是身份：`_TEST` 只出现在测试后端的安装包上。
- * 生产后端的 Preview 包靠 productName（`ZCode Preview-<version>-...`）与正式包区分。
+ * 生产后端的 Preview 包靠 productName（`Mesacode Preview-<version>-...`）与正式包区分。
  */
 export function resolveDesktopArtifactSuffix(env = process.env) {
-  return normalizeDesktopZCodeEnv(env) === "test" ? "_TEST" : "";
+  return normalizeDesktopMesacodeEnv(env) === "test" ? "_TEST" : "";
 }
 
 /**
@@ -89,7 +89,7 @@ export function resolveDesktopArtifactSuffix(env = process.env) {
  */
 export function resolveWindowsAppUserModelIdForFlavor(flavor, runtime = { isPackaged: true }) {
   if (runtime.isPackaged === false) {
-    return "cn.aminer.zcode";
+    return "cn.aminer.mesacode";
   }
   return desktopProductIdentities[flavor === "preview" ? "preview" : "production"].appId;
 }

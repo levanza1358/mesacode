@@ -31,15 +31,14 @@ Test entry points are defined by the target package's current `package.json` and
 - `packages/ui`: shared React components, hooks, and Zustand stores.
 - `packages/services`: business services; `packages/rpc`: RPC framework.
 - `packages/shared`: shared protocol and types; `packages/client`: Agent client SDK.
-- `apps/zcode-cli`: Agent CLI and runtime.
+- `apps/mesacode-cli`: Agent CLI and runtime.
 - `CONTEXT.md`: plugin store domain vocabulary; read before changing related UI.
 - `DESIGN.md`: UI design guidelines; read before changing UI.
 
 ## Product naming
 
 - The product name is **Mesa Code**. Use it in user-facing text, documentation, and UI copy.
-- Internal identifiers intentionally keep the `zcode` name for compatibility: package names (`@zcode/*`), directories (`apps/zcode-cli`), environment variables (`ZCODE_*`), protocol files (`zcode-protocol`), and storage paths (`.zcode/`).
-- Do not bulk-rename these internal identifiers. Renaming them breaks packaging, protocol compatibility, and existing user data directories.
+- Internal identifiers intentionally keep the `mesacode` name for compatibility: package names (`@mesacode/*`), directories (`apps/mesacode-cli`), environment variables (`mesacode_*`), protocol files (`mesacode-protocol`), and storage paths (`.mesacode/`).
 
 ## Implementation and verification
 
@@ -55,14 +54,14 @@ Test entry points are defined by the target package's current `package.json` and
 ## UI and platform boundaries
 
 - Follow `DESIGN.md`, reuse existing components, and account for desktop and mobile web layout, interaction, theme, and internationalization.
-- Components access services through `packages/ui/src/hooks/`; platform operations go through `IPlatformService` (`packages/shared/src/platform.ts`), never `window.zcode` directly.
+- Components access services through `packages/ui/src/hooks/`; platform operations go through `IPlatformService` (`packages/shared/src/platform.ts`), never `window.mesacode` directly.
 - Handle Desktop, Web, local, and remote differences through dependency injection, and account for Windows, macOS, and Linux.
 - Zustand state lives in `packages/ui/src/store/`. Broadcast-synced fields such as theme and language must guard against feedback loops; local UI state must not be mistaken for server truth.
 - Files under `hooks/` that contain JSX use `.tsx`.
 
 ## Process, protocol, and remote control
 
-- The Desktop app talks to the Agent over stdio. When the protocol changes, also update `packages/shared/src/zcode-protocol/index.ts` with strict types and runtime validation.
+- The Desktop app talks to the Agent over stdio. When the protocol changes, also update `packages/shared/src/mesacode-protocol/index.ts` with strict types and runtime validation.
 - Main owns windows, native operations, process scheduling, and message forwarding. It does not carry task/session business state.
 - Each window uses one window-scoped Local Host; a local workspace shares that Host. Remote workspaces are managed by the in-window connection registry; do not create a separate Desktop Remote Host.
 - Mobile remote control attaches to the desktop's existing Host attachment and reuses the session runtime. Do not start a separate Agent, Local Host, or remote session for mobile.
@@ -80,7 +79,7 @@ Test entry points are defined by the target package's current `package.json` and
 
 ## Logging
 
-- UI uses `packages/ui/src/logger.ts`, never `console.log` or `window.zcode?.log` directly.
+- UI uses `packages/ui/src/logger.ts`, never `console.log` or `window.mesacode?.log` directly.
 - Agent/session/runtime service logs use `createServiceLogger(scope)` (`packages/services/src/logger/serviceLogger.ts`).
 - `debug` is for protocol raw data, streaming chunks, and per-item tool updates: high-frequency diagnostics that are not persisted in production.
 - `info` is for process and session lifecycle, permission results, and one-time initialization: production-useful events.

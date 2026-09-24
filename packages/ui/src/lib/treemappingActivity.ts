@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Treemapping v1 的 tool call 解析规则需要集中保持优先级一致，避免 UI 和测试分散维护后产生识别差异。 */
 import type { TaskChatMessage, TaskChatToolCall } from "@/lib/taskChatMessageTypes.js";
-import { getPathLeaf, isAbsoluteFilePath } from "@/lib/path.js";
+import { isAbsoluteFilePath } from "@/lib/path.js";
 import { readRawToolCallFileSummaries } from "@/ToolCallBlocks/fileSummaries.js";
 import { resolveToolCallIdentity } from "@/lib/toolIdentity.js";
 
@@ -419,7 +419,7 @@ function collectWritableEvents(
         rawOutputContentAction ??
         (summary.actionLabel === "Deleted"
           ? "delete"
-          : // ZCode agent 会返回 kind=edit/title=Write/rawOutput.content.type=update。
+          : // Mesacode agent 会返回 kind=edit/title=Write/rawOutput.content.type=update。
             // title 只是展示文案，不能作为写入兜底；这里只信任结构化变更类型，避免 edit 被误染成 write。
             summary.actionLabel === "Created" || summary.operationKind === "write"
             ? "write"

@@ -7,7 +7,7 @@ import {
   useBaseWorkspaceServices,
   useWorkspaceServicesResolution,
 } from "@/hooks/useWorkspaceServices.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { SettingsGroupCard } from "@/settings/SettingsPageParts.js";
 import { logger } from "@/logger.js";
 
@@ -15,7 +15,7 @@ import { logger } from "@/logger.js";
  * SOUL.md persona editor.
  *
  * The persona layer is a plain file on disk in two scopes, both edited here:
- * user scope (`~/.zcode/SOUL.md`, applies to every workspace) and workspace scope
+ * user scope (`~/.mesacode/SOUL.md`, applies to every workspace) and workspace scope
  * (`<root>/SOUL.md`, adds to the global one). The CLI context adapter stays the only
  * reader, so a save takes effect on the next context resolution.
  */
@@ -52,7 +52,7 @@ function SoulEditor({
   workspacePath?: string;
   workspaceIdentity?: string;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const baseServices = useBaseWorkspaceServices();
   const resolution = useWorkspaceServicesResolution(workspacePath, undefined, workspaceIdentity);
   // Global SOUL.md is local user state. Do not route it through the active remote workspace.
@@ -133,7 +133,7 @@ function SoulEditor({
 
   const handleRestoreDefaults = useCallback(() => {
     // Restoring only fills the editor; the user still has to save, matching the
-    // .zcodeignore section behaviour.
+    // .mesacodeignore section behaviour.
     setDraft(intl.formatMessage({ id: "settings.soul.defaultContent" }));
   }, [intl]);
 

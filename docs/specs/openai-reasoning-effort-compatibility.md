@@ -11,7 +11,7 @@ GPT-5.6 family because the upstream API accepts `minimal`, `low`, `medium`, `hig
 
 ## Ownership and boundary
 
-`config/provider/zcode-builtin.json` owns the built-in model catalog and its supported
+`config/provider/mesacode-builtin.json` owns the built-in model catalog and its supported
 reasoning-level metadata. The model option-map adapter serializes the selected catalog
 value without inventing a second set of levels. Therefore catalog validation prevents an
 invalid value before the request reaches the provider gateway.

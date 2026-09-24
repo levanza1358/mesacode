@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Loader2Icon, RefreshCwIcon } from "lucide-react";
-import type { ModelDiscoveryResult } from "@zcode/services";
+import type { ModelDiscoveryResult } from "@mesacode/services";
 import { Button } from "@/components/ui/button.js";
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog.js";
 import { Checkbox } from "@/components/ui/checkbox.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMesacodeIntl } from "@/i18n/IntlProvider.js";
 import { logger } from "@/logger.js";
 import { cn } from "@/components/lib/utils.js";
 
@@ -42,7 +42,7 @@ export function ProviderModelDiscoveryDialog({
   onAddSelected: (modelIds: readonly string[]) => Promise<string[]>;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMesacodeIntl();
   const [phase, setPhase] = useState<DiscoveryPhase>("loading");
   const [discovered, setDiscovered] = useState<readonly string[]>([]);
   const [selected, setSelected] = useState<ReadonlySet<string>>(() => new Set());

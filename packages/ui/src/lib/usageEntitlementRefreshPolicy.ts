@@ -1,15 +1,15 @@
-import type { IUsageStatsService } from "@zcode/services";
+import type { IUsageStatsService } from "@mesacode/services";
 import type {
   UsageEntitlementSnapshot,
-  ZCodeAccountAccess,
-  ZCodeProviderAccountAccess,
-} from "@zcode/shared";
+  MesacodeAccountAccess,
+  MesacodeProviderAccountAccess,
+} from "@mesacode/shared";
 
 export interface UsageEntitlementRequestOptions {
   invalidateBalanceCache?: boolean;
   includeSubscription: boolean;
   preferredProviderId?: string;
-  accountAccess?: ZCodeProviderAccountAccess | ZCodeAccountAccess;
+  accountAccess?: MesacodeProviderAccountAccess | MesacodeAccountAccess;
   allowDisabledPreferredProvider: boolean;
   requirePreferredProvider: boolean;
   allowEnvApiKey?: boolean;

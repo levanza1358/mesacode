@@ -1,4 +1,4 @@
-import type { ConversationShareFailureIssue } from "@zcode/services";
+import type { ConversationShareFailureIssue } from "@mesacode/services";
 
 interface ConversationShareErrorDetails {
   name: string;
